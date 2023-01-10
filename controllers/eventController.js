@@ -56,7 +56,7 @@ const getSingleEvent = async (req, res) => {
   if (!event) {
     throw new CustomError.NotFoundError(`No event with id : ${eventId}`);
   }
-  checkPermissions(req.user, event.user);
+  checkPermissions(req.user, event.user._id);
   res.status(StatusCodes.OK).json({ event });
 };
 
