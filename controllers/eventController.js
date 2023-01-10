@@ -61,7 +61,15 @@ const getSingleEvent = async (req, res) => {
 };
 
 const getCurrentUserEvents = async (req, res) => {
-  const events = await Event.find({ user: req.user.userId });
+  const events = await Event.find({ user: req.user.userId })
+    .populate({
+      path: "user",
+      select: "name",
+    })
+    .populate({
+      path: "invitation",
+      select: "name mainStyles backgroundImage",
+    });
   res.status(StatusCodes.OK).json({ events, count: events.length });
 };
 
