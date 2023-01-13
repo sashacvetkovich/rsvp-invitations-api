@@ -20,6 +20,8 @@ router
 
 router.route("/showAllMyEvents").get(authenticateUser, getCurrentUserEvents);
 
-router.route("/:id").get(authenticateUser, getSingleEvent);
+router
+  .route("/:id")
+  .get(authenticateUser, getSingleEvent)
 
 module.exports = router;

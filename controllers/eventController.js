@@ -45,6 +45,7 @@ const getAllEvents = async (req, res) => {
 const getSingleEvent = async (req, res) => {
   const { id: eventId } = req.params;
   const event = await Event.findOne({ _id: eventId })
+    .select("invitation user eventName eventImage eventTitle eventDescription")
     .populate({
       path: "user",
       select: "name",
@@ -62,6 +63,7 @@ const getSingleEvent = async (req, res) => {
 
 const getCurrentUserEvents = async (req, res) => {
   const events = await Event.find({ user: req.user.userId })
+    .select("invitation user eventName eventImage eventTitle eventDescription")
     .populate({
       path: "user",
       select: "name",

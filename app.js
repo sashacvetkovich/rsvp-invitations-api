@@ -10,6 +10,7 @@ const connectDB = require("./db/connect");
 const authRouter = require("./routes/authRoutes");
 const invitationRouter = require('./routes/invitationRoutes');
 const eventRouter = require('./routes/eventRoutes');
+const guestRouter = require('./routes/guestRoutes');
 
 // middleware
 const notFoundMiddleware = require("./middleware/not-found");
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 app.use('/api/v1/invitations', invitationRouter);
 app.use('/api/v1/events', eventRouter);
+app.use('/api/v1/guest', guestRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

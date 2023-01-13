@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { GuestSchema } = require("./Guest");
 
 const EventSchema = mongoose.Schema({
   eventName: {
@@ -29,6 +30,7 @@ const EventSchema = mongoose.Schema({
     ref: "Invitation",
     required: true,
   },
+  guestList: [GuestSchema],
 });
 
 module.exports = mongoose.model("Event", EventSchema);
