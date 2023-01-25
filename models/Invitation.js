@@ -21,6 +21,14 @@ const InvitationSchema = new mongoose.Schema({
     type: String,
     default: "/uploads/example.jpeg",
   },
+  exampleData: {
+    type: Object,
+    required: [true, "Please provide example data"],
+  },
+  previewImage: {
+    type: String,
+    required: [true, "Please provide preview image for invitaion"],
+  },
 });
 
 module.exports = mongoose.model("Invitation", InvitationSchema);
