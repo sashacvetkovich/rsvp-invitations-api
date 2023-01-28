@@ -5,6 +5,7 @@ const {
   createTokenUser,
   createJWT,
   attachCookiesToResponse,
+  isTokenValid,
 } = require("../utils");
 
 const register = async (req, res) => {
@@ -50,6 +51,21 @@ const login = async (req, res) => {
   res.status(StatusCodes.OK).json({ user: tokenUser, token: jwt });
 };
 
+const getUserData = async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    throw new CustomError.UnauthenticatedError("Please provide valid token");
+  }
+
+  try {
+    const { name, userId, role } = isTokenValid({ token });
+    res.status(StatusCodes.OK).json({ user: { name, userId, role } });
+  } catch (error) {
+    throw new CustomError.UnauthenticatedError("Please provide valid token");
+  }
+};
+
 const logout = async (req, res) => {
   res.cookie("token", "logout", {
     httpOnly: true,
@@ -62,4 +78,5 @@ module.exports = {
   register,
   login,
   logout,
+  getUserData,
 };
