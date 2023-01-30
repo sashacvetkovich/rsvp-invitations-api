@@ -4,6 +4,11 @@ const CustomError = require("../errors");
 
 const createInvitation = async (req, res) => {
   req.body.user = req.user.userId;
+
+  if (!req.body.templateData || !req.body.templateData.length) {
+    throw new CustomError.BadRequestError(`Please provide template data`);
+  }
+
   const invitation = await Invitation.create(req.body);
   res.status(StatusCodes.CREATED).json({ invitation });
 };

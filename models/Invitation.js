@@ -13,22 +13,39 @@ const InvitationSchema = new mongoose.Schema({
     required: [true, "Please provide invitaion category"],
     maxlength: [20, "Category name can not be more than 20 characters"],
   },
-  mainStyles: {
-    type: Object,
-    required: [true, "Please provide product styles"],
-  },
-  backgroundImage: {
-    type: String,
-    default: "/uploads/example.jpeg",
-  },
-  exampleData: {
-    type: Object,
-    required: [true, "Please provide example data"],
-  },
   previewImage: {
     type: String,
     required: [true, "Please provide preview image for invitaion"],
   },
+  templateData: [
+    {
+      itemName: {
+        type: String,
+        trim: true,
+        required: [true, "Please provide itemName"],
+      },
+      itemStyles: {
+        type: Object,
+        required: [true, "Please provide itemName"],
+      },
+      isEditable: {
+        type: Boolean,
+        required: [true, "Please provide isEditable"],
+      },
+      exampleText: {
+        type: String,
+        required: [true, "Please provide exampleText"],
+      },
+      publicName: {
+        type: String,
+        required: [true, "Please provide public name"],
+      },
+      itemType: {
+        type: String,
+        enum: ["image", "text", "div", "span"],
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Invitation", InvitationSchema);
