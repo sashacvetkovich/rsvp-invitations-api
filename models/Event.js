@@ -6,19 +6,24 @@ const EventSchema = mongoose.Schema({
     type: String,
     required: [true, "Please provide event name"],
   },
-  eventImage: {
+  venueName: {
     type: String,
-    required: [true, "Please provide event image"],
+    required: [true, "Please provide venue name"],
+    maxlength: [30, "Venue name can not be more than 30 characters"],
   },
-  eventTitle: {
+  venueAddress: {
     type: String,
-    required: [true, "Please provide event title"],
-    maxlength: [30, "Event title can not be more than 30 characters"],
+    required: [true, "Please provide venue address"],
+    maxlength: [30, "Venue address can not be more than 30 characters"],
   },
   eventDescription: {
     type: String,
     required: [true, "Please provide event description"],
     maxlength: [100, "Description can not be more than 100 characters"],
+  },
+  eventDate: {
+    type: Date,
+    required: [true, "Please provide event date"],
   },
   user: {
     type: mongoose.Schema.ObjectId,
@@ -29,6 +34,20 @@ const EventSchema = mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Invitation",
     required: true,
+  },
+  customData: {
+    type: [
+      {
+        id: String,
+        itemName: String,
+        itemType: {
+          type: String,
+          enum: ["text", "image"],
+        },
+        value: String,
+      },
+    ],
+    required: [true, "Please custom data"],
   },
   guestList: [GuestSchema],
 });

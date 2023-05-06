@@ -17,6 +17,10 @@ const InvitationSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide preview image for invitaion"],
   },
+  backgroundImage: {
+    type: String,
+    required: [true, "Please provide background image for invitaion"],
+  },
   templateData: [
     {
       itemName: {

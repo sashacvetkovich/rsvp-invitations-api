@@ -4,29 +4,37 @@ const CustomError = require("../errors");
 const { checkPermissions } = require("../utils");
 
 const createEvent = async (req, res) => {
-  const { eventName, eventImage, eventTitle, eventDescription, invitation } =
-    req.body;
+  const { customData, eventData, templateId } = req.body;
+
+  if (!customData || !eventData || !templateId) {
+    throw new CustomError.BadRequestError("No event info provided");
+  }
+
+  const { eventDate, eventDescription, eventName, venueAddress, venueName } =
+    eventData;
 
   if (
-    !eventName ||
-    !eventImage ||
-    !eventTitle ||
+    !eventDate ||
     !eventDescription ||
-    !invitation
+    !eventName ||
+    !venueAddress ||
+    !venueName
   ) {
     throw new CustomError.BadRequestError("No event info provided");
   }
 
   const event = await Event.create({
-    eventName,
-    eventImage,
-    eventTitle,
+    eventDate,
     eventDescription,
+    eventName,
+    venueAddress,
+    venueName,
     user: req.user.userId,
-    invitation,
+    invitation: templateId,
+    customData
   });
 
-  res.status(StatusCodes.CREATED).json({ success: true, event });
+  res.status(StatusCodes.CREATED).json({ success: true, event: event._id });
 };
 
 const getAllEvents = async (req, res) => {
