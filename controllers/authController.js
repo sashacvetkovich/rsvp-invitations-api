@@ -1,4 +1,4 @@
-const { registerService } = require("../services/authService");
+const { registerService, loginService } = require("../services/authService");
 const { ErrorHandler } = require("../helpers/error");
 const { hashPassword } = require("../helpers/hashPassword");
 
@@ -21,8 +21,28 @@ const registerController = async (req, res) => {
   });
 };
 
+const loginController = async (req, res) => {
+  const { email, password } = req.body;
+  const { token, refreshToken, user } = await loginService(
+    email,
+    password
+  );
+
+  res.header("auth-token", token);
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "development" ? true : "none",
+    secure: process.env.NODE_ENV === "development" ? false : true,
+  });
+  res.status(200).json({
+    token,
+    user,
+  });
+};
+
 module.exports = {
   registerController,
+  loginController,
 };
 
 // const User = require("../models/User");

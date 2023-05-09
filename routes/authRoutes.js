@@ -3,13 +3,13 @@ const router = express.Router();
 
 const {
   registerController,
-  login,
+  loginController,
   logout,
   getUserData,
 } = require("../controllers/authController");
 
 router.post("/register", registerController);
-// router.post("/login", login);
+router.post("/login", loginController);
 // router.get("/logout", logout);
 // router.post("/getuser", getUserData);
 

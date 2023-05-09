@@ -2,7 +2,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { ErrorHandler } = require("../helpers/error");
 const validateUser = require("../helpers/validateUser");
-const { getUserByEmailDb, createUserDb, getUserByUsernameDb } = require("../db/auth.db");
+const {
+  getUserByEmailDb,
+  createUserDb,
+  getUserByUsernameDb,
+} = require("../db/auth.db");
 
 async function signToken(data) {
   try {
@@ -77,4 +81,54 @@ const registerService = async (user) => {
   }
 };
 
-module.exports = { registerService };
+const loginService = async (email, password) => {
+  try {
+    if (!validateUser(email, password)) {
+      throw new ErrorHandler(403, "Invalid login");
+    }
+
+    const user = await getUserByEmailDb(email);
+
+    if (!user) {
+      throw new ErrorHandler(403, "Email or password incorrect.");
+    }
+
+    if (user.google_id && !user.password) {
+      throw new ErrorHandler(403, "Login in with Google");
+    }
+
+    const {
+      password: dbPassword,
+      user_id,
+      roles,
+      cart_id,
+      fullname,
+      username,
+    } = user;
+    const isCorrectPassword = await bcrypt.compare(password, dbPassword);
+
+    if (!isCorrectPassword) {
+      throw new ErrorHandler(403, "Email or password incorrect.");
+    }
+
+    const token = await signToken({ id: user_id, roles, cart_id });
+    const refreshToken = await signRefreshToken({
+      id: user_id,
+      roles,
+      cart_id,
+    });
+    return {
+      token,
+      refreshToken,
+      user: {
+        user_id,
+        fullname,
+        username,
+      },
+    };
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+module.exports = { registerService, loginService };
