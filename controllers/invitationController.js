@@ -9,9 +9,22 @@ const createInvitation = async (req, res) => {
     throw new CustomError.BadRequestError(`Please provide template data`);
   }
 
-  const invitation = await Invitation.create(req.body);
-  res.status(StatusCodes.CREATED).json({ invitation });
+  res.status(StatusCodes.CREATED).json({ test: "ok" });
+
+  // const invitation = await Invitation.create(req.body);
+  // res.status(StatusCodes.CREATED).json({ invitation });
 };
+
+// const createInvitation = async (req, res) => {
+//   req.body.user = req.user.userId;
+
+//   if (!req.body.templateData || !req.body.templateData.length) {
+//     throw new CustomError.BadRequestError(`Please provide template data`);
+//   }
+
+//   const invitation = await Invitation.create(req.body);
+//   res.status(StatusCodes.CREATED).json({ invitation });
+// };
 
 const getAllInvitations = async (req, res) => {
   const invitations = await Invitation.find({});

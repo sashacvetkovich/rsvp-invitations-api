@@ -10,7 +10,7 @@ const {
 
 async function signToken(data) {
   try {
-    return jwt.sign(data, process.env.SECRET, { expiresIn: "60s" });
+    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "1d" });
   } catch (error) {
     console.log(error);
     throw new ErrorHandler(500, "An error occurred");
@@ -19,7 +19,7 @@ async function signToken(data) {
 
 async function signRefreshToken(data) {
   try {
-    return jwt.sign(data, process.env.REFRESH_SECRET, { expiresIn: "1h" });
+    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "20d" });
   } catch (error) {
     logger.error(error);
     throw new ErrorHandler(500, error.message);
@@ -111,11 +111,10 @@ const loginService = async (email, password) => {
       throw new ErrorHandler(403, "Email or password incorrect.");
     }
 
-    const token = await signToken({ id: user_id, roles, cart_id });
+    const token = await signToken({ id: user_id, roles });
     const refreshToken = await signRefreshToken({
       id: user_id,
       roles,
-      cart_id,
     });
     return {
       token,
