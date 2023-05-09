@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {
   authenticateUser,
-  authorizePermissions,
+  verifyAdmin,
 } = require("../middleware/authentication");
 
 const {
@@ -16,13 +16,13 @@ const {
 
 router
   .route("/")
-  .post([authenticateUser, authorizePermissions("admin")], createInvitation)
+  .post([authenticateUser, verifyAdmin], createInvitation)
   .get(getAllInvitations);
 
 router
   .route("/:id")
   .get(getSingleInvitation)
-  .patch([authenticateUser, authorizePermissions("admin")], updateInvitation)
-  .delete([authenticateUser, authorizePermissions("admin")], deleteInvitation);
+  .patch([authenticateUser, verifyAdmin], updateInvitation)
+  .delete([authenticateUser, verifyAdmin], deleteInvitation);
 
 module.exports = router;

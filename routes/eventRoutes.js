@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {
   authenticateUser,
-  authorizePermissions,
+  verifyAdmin,
 } = require("../middleware/authentication");
 
 const {
@@ -16,7 +16,7 @@ const {
 router
   .route("/")
   .post(authenticateUser, createEvent)
-  .get(authenticateUser, authorizePermissions("admin"), getAllEvents);
+  .get(authenticateUser, verifyAdmin, getAllEvents);
 
 router.route("/showAllMyEvents").get(authenticateUser, getCurrentUserEvents);
 
