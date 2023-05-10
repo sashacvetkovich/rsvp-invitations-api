@@ -1,6 +1,7 @@
 const Invitation = require("../models/Invitation");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const { createInvitationService } = require("../services/invitationService");
 
 const createInvitation = async (req, res) => {
   req.body.user = req.user.userId;
@@ -9,8 +10,9 @@ const createInvitation = async (req, res) => {
     throw new CustomError.BadRequestError(`Please provide template data`);
   }
 
-  res.status(StatusCodes.CREATED).json({ test: "ok" });
+  // res.status(StatusCodes.CREATED).json({ test: "ok" });
 
+  const invitaion = await createInvitationService(req.body)
   // const invitation = await Invitation.create(req.body);
   // res.status(StatusCodes.CREATED).json({ invitation });
 };

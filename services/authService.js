@@ -101,7 +101,6 @@ const loginService = async (email, password) => {
       password: dbPassword,
       user_id,
       roles,
-      cart_id,
       fullname,
       username,
     } = user;
