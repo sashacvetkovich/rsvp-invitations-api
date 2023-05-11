@@ -1,4 +1,5 @@
 const pool = require("../config");
+const format = require("pg-format");
 
 const createInvitationDb = async ({
   category,
@@ -13,27 +14,14 @@ const createInvitationDb = async ({
   return invitaion[0];
 };
 
-const createInvitationDataDb = async ({
-  item_name,
-  item_styles,
-  is_editable,
-  example_text,
-  public_name,
-  item_type,
-  template_id,
-}) => {
-  const data = await pool.query(
-    "INSERT INTO invitation_template(item_name, item_styles, is_editable, example_text, public_name, item_type, template_id) VALUES ($1, $2, $3, $4) returning *; "[
-      (item_name,
-      item_styles,
-      is_editable,
-      example_text,
-      public_name,
-      item_type,
-      template_id)
-    ]
+const createInvitationDataDb = async (data) => {
+  const { rows: invitaionData } = await pool.query(
+    format(
+      "INSERT INTO template_data(item_name, item_styles, is_editable, example_text, public_name, item_type, template_id) VALUES %L returning *; ",
+      data
+    )
   );
-  return data;
+  return invitaionData;
 };
 
 module.exports = {
