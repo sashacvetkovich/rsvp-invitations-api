@@ -6,15 +6,14 @@ const { createInvitationService } = require("../services/invitationService");
 const createInvitation = async (req, res) => {
   req.body.user = req.user.userId;
 
-  if (!req.body.templateData || !req.body.templateData.length) {
+  if (Object.keys(req.body).length === 0) {
     throw new CustomError.BadRequestError(`Please provide template data`);
   }
 
   // res.status(StatusCodes.CREATED).json({ test: "ok" });
 
-  const invitaion = await createInvitationService(req.body)
-  // const invitation = await Invitation.create(req.body);
-  // res.status(StatusCodes.CREATED).json({ invitation });
+  const invitaion = await createInvitationService(req.body);
+  res.status(StatusCodes.CREATED).json({ dr: invitaion });
 };
 
 // const createInvitation = async (req, res) => {

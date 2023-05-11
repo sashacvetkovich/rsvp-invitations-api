@@ -6,12 +6,11 @@ const createInvitationDb = async ({
   invitation_name,
   background_image,
 }) => {
-  const data = await pool.query(
-    "INSERT INTO invitation_template(category, preview_image, invitation_name, background_image) VALUES ($1, $2, $3, $4) returning *; "[
-      (category, preview_image, invitation_name, background_image)
-    ]
+  const { rows: invitaion } = await pool.query(
+    "INSERT INTO invitation_template(category, preview_image, invitation_name, background_image) VALUES ($1, $2, $3, $4) returning *; ",
+    [category, preview_image, invitation_name, background_image]
   );
-  return data;
+  return invitaion[0];
 };
 
 const createInvitationDataDb = async ({
