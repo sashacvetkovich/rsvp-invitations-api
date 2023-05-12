@@ -7,16 +7,16 @@ const {
 } = require("../middleware/authentication");
 
 const {
-  createInvitation,
+  createTemplate,
   getAllInvitations,
   getSingleInvitation,
   updateInvitation,
   deleteInvitation,
-} = require("../controllers/invitationController");
+} = require("../controllers/templateController");
 
 router
   .route("/")
-  .post([authenticateUser, verifyAdmin], createInvitation)
+  .post([authenticateUser, verifyAdmin], createTemplate)
   .get(getAllInvitations);
 
 router

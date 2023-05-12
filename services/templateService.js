@@ -1,12 +1,12 @@
 const { ErrorHandler } = require("../helpers/error");
 const {
-  createInvitationDb,
-  createInvitationDataDb,
-} = require("../db/invitation.db");
+  createTemplateDb,
+  createTemplateDataDb,
+} = require("../db/templateDb");
 
-const createInvitationService = async (data) => {
+const createTemplateService = async (data) => {
   const {
-    invitation_name,
+    template_name,
     category,
     background_image,
     preview_image,
@@ -14,10 +14,10 @@ const createInvitationService = async (data) => {
   } = data;
 
   try {
-    const invitation = await createInvitationDb({
+    const template = await createTemplateDb({
       category,
       preview_image,
-      invitation_name,
+      template_name,
       background_image,
     });
 
@@ -38,17 +38,17 @@ const createInvitationService = async (data) => {
         example_text,
         public_name,
         item_type,
-        invitation.id,
+        template.id,
       ];
     });
 
-    const invitationData = await createInvitationDataDb(templateDataWithId);
+    const templateData = await createTemplateDataDb(templateDataWithId);
 
-    return { invitation, invitationData };
+    return { template, templateData };
     
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
 };
 
-module.exports = { createInvitationService };
+module.exports = { createTemplateService };

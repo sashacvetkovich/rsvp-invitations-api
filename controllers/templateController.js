@@ -1,19 +1,17 @@
 const Invitation = require("../models/Invitation");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
-const { createInvitationService } = require("../services/invitationService");
+const { createTemplateService } = require("../services/templateService");
 
-const createInvitation = async (req, res) => {
+const createTemplate = async (req, res) => {
   req.body.user = req.user.userId;
 
   if (Object.keys(req.body).length === 0) {
     throw new CustomError.BadRequestError(`Please provide template data`);
   }
 
-  // res.status(StatusCodes.CREATED).json({ test: "ok" });
-
-  const invitaion = await createInvitationService(req.body);
-  res.status(StatusCodes.CREATED).json({ dr: invitaion });
+  const template = await createTemplateService(req.body);
+  res.status(StatusCodes.CREATED).json({ template });
 };
 
 // const createInvitation = async (req, res) => {
@@ -84,7 +82,7 @@ const deleteInvitation = async (req, res) => {
 };
 
 module.exports = {
-  createInvitation,
+  createTemplate,
   getAllInvitations,
   getSingleInvitation,
   updateInvitation,
