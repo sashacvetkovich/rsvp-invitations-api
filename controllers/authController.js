@@ -1,6 +1,4 @@
 const { registerService, loginService } = require("../services/authService");
-const { ErrorHandler } = require("../helpers/error");
-const { hashPassword } = require("../helpers/hashPassword");
 
 const registerController = async (req, res) => {
   const { token, refreshToken, user } = await registerService(req.body);

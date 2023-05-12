@@ -6,25 +6,25 @@ const {
   getUserByEmailDb,
   createUserDb,
   getUserByUsernameDb,
-} = require("../db/auth.db");
+} = require("../db/authDb");
 
-async function signToken(data) {
+const signToken = async (data) => {
   try {
     return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "1d" });
   } catch (error) {
     console.log(error);
     throw new ErrorHandler(500, "An error occurred");
   }
-}
+};
 
-async function signRefreshToken(data) {
+const signRefreshToken = async (data) => {
   try {
     return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "20d" });
   } catch (error) {
-    logger.error(error);
+    console.log(error);
     throw new ErrorHandler(500, error.message);
   }
-}
+};
 
 const registerService = async (user) => {
   try {
@@ -53,7 +53,6 @@ const registerService = async (user) => {
         password: hashedPassword,
       });
 
-      //   const { id: cart_id } = await createCartDb(newUser.user_id);
       const token = await signToken({
         id: newUser.user_id,
         roles: newUser.roles,
@@ -97,13 +96,7 @@ const loginService = async (email, password) => {
       throw new ErrorHandler(403, "Login in with Google");
     }
 
-    const {
-      password: dbPassword,
-      user_id,
-      roles,
-      fullname,
-      username,
-    } = user;
+    const { password: dbPassword, user_id, roles, fullname, username } = user;
     const isCorrectPassword = await bcrypt.compare(password, dbPassword);
 
     if (!isCorrectPassword) {
