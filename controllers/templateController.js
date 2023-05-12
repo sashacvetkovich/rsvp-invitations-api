@@ -1,7 +1,11 @@
 const Invitation = require("../models/Invitation");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
-const { createTemplateService } = require("../services/templateService");
+const {
+  createTemplateService,
+  getSingleTemplateService,
+  getAllTemplatesService
+} = require("../services/templateService");
 
 const createTemplate = async (req, res) => {
   req.body.user = req.user.userId;
@@ -14,35 +18,24 @@ const createTemplate = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ template });
 };
 
-// const createInvitation = async (req, res) => {
-//   req.body.user = req.user.userId;
+const getAllTemplates = async (req, res) => {
+  const templates = await getAllTemplatesService()
 
-//   if (!req.body.templateData || !req.body.templateData.length) {
-//     throw new CustomError.BadRequestError(`Please provide template data`);
-//   }
-
-//   const invitation = await Invitation.create(req.body);
-//   res.status(StatusCodes.CREATED).json({ invitation });
-// };
-
-const getAllInvitations = async (req, res) => {
-  const invitations = await Invitation.find({});
-
-  res.status(StatusCodes.OK).json({ invitations, count: invitations.length });
+  res.status(StatusCodes.OK).json({ templates, count: templates.length });
 };
 
-const getSingleInvitation = async (req, res) => {
-  const { id: invitationId } = req.params;
+const getSingleTemplate = async (req, res) => {
+  const { id: templateId } = req.params;
 
-  const invitation = await Invitation.findOne({ _id: invitationId });
+  const template = await getSingleTemplateService(templateId);
 
-  if (!invitation) {
+  if (!template) {
     throw new CustomError.NotFoundError(
-      `No invitation with id : ${invitationId}`
+      `No invitation with id : ${templateId}`
     );
   }
 
-  res.status(StatusCodes.OK).json({ invitation });
+  res.status(StatusCodes.OK).json({ template });
 };
 
 const updateInvitation = async (req, res) => {
@@ -83,8 +76,8 @@ const deleteInvitation = async (req, res) => {
 
 module.exports = {
   createTemplate,
-  getAllInvitations,
-  getSingleInvitation,
+  getAllTemplates,
+  getSingleTemplate,
   updateInvitation,
   deleteInvitation,
 };

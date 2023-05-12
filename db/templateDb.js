@@ -24,7 +24,24 @@ const createTemplateDataDb = async (data) => {
   return templateData;
 };
 
+const getAllTemplatesDb = async () => {
+  const { rows: templates } = await pool.query(
+    "SELECT * FROM invitation_template"
+  );
+  return templates;
+};
+
+const getSingleTemplateDb = async (templateId) => {
+  const { rows: template } = await pool.query(
+    "SELECT * ,(SELECT array_to_json(array_agg(row_to_json(template_alias))) FROM (SELECT * FROM template_data WHERE template_id = $1) template_alias) FROM invitation_template WHERE id = $1",
+    [templateId]
+  );
+  return template[0];
+};
+
 module.exports = {
   createTemplateDb,
   createTemplateDataDb,
+  getAllTemplatesDb,
+  getSingleTemplateDb,
 };

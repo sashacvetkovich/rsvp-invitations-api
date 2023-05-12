@@ -8,8 +8,8 @@ const {
 
 const {
   createTemplate,
-  getAllInvitations,
-  getSingleInvitation,
+  getAllTemplates,
+  getSingleTemplate,
   updateInvitation,
   deleteInvitation,
 } = require("../controllers/templateController");
@@ -17,11 +17,11 @@ const {
 router
   .route("/")
   .post([authenticateUser, verifyAdmin], createTemplate)
-  .get(getAllInvitations);
+  .get(getAllTemplates);
 
 router
   .route("/:id")
-  .get(getSingleInvitation)
+  .get(getSingleTemplate)
   .patch([authenticateUser, verifyAdmin], updateInvitation)
   .delete([authenticateUser, verifyAdmin], deleteInvitation);
 

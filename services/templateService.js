@@ -2,6 +2,8 @@ const { ErrorHandler } = require("../helpers/error");
 const {
   createTemplateDb,
   createTemplateDataDb,
+  getSingleTemplateDb,
+  getAllTemplatesDb,
 } = require("../db/templateDb");
 
 const createTemplateService = async (data) => {
@@ -45,10 +47,29 @@ const createTemplateService = async (data) => {
     const templateData = await createTemplateDataDb(templateDataWithId);
 
     return { template, templateData };
-    
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
 };
 
-module.exports = { createTemplateService };
+const getAllTemplatesService = async () => {
+  try {
+    return await getAllTemplatesDb();
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const getSingleTemplateService = async (templateId) => {
+  try {
+    return await getSingleTemplateDb(templateId);
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+module.exports = {
+  createTemplateService,
+  getSingleTemplateService,
+  getAllTemplatesService,
+};
