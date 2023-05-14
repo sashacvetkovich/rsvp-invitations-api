@@ -10,7 +10,6 @@ const createTemplateService = async (data) => {
   const {
     template_name,
     category,
-    background_image,
     preview_image,
     template_data,
   } = data;
@@ -20,7 +19,6 @@ const createTemplateService = async (data) => {
       category,
       preview_image,
       template_name,
-      background_image,
     });
 
     const templateDataWithId = template_data.map((item) => {

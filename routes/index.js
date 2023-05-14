@@ -6,7 +6,7 @@ const guestRouter = require("../routes/guestRoutes");
 
 router.use("/auth", authRouter);
 router.use("/template", templateRouter);
-router.use("/events", eventRouter);
+router.use("/event", eventRouter);
 router.use("/guest", guestRouter);
 
 module.exports = router;

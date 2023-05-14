@@ -5,11 +5,10 @@ const createTemplateDb = async ({
   category,
   preview_image,
   template_name,
-  background_image,
 }) => {
   const { rows: template } = await pool.query(
-    "INSERT INTO invitation_template(category, preview_image, template_name, background_image) VALUES ($1, $2, $3, $4) returning *; ",
-    [category, preview_image, template_name, background_image]
+    "INSERT INTO invitation_template(category, preview_image, template_name) VALUES ($1, $2, $3) returning *; ",
+    [category, preview_image, template_name]
   );
   return template[0];
 };
