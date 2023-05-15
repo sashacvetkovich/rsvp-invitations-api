@@ -17,6 +17,7 @@ const addGuest = async (req, res) => {
   if (!event) {
     throw new CustomError.NotFoundError(`No event with id : ${eventId}`);
   }
+
   checkPermissions(req.user, event.user._id);
 
   const newGuest = await Guest.create({
@@ -86,7 +87,7 @@ const getSingleGuest = async (req, res) => {
 const updateGuestAnswer = async (req, res) => {
   const { answer, guestId } = req.body;
 
-  if ((typeof answer !== 'boolean') || !guestId) {
+  if (typeof answer !== "boolean" || !guestId) {
     throw new CustomError.NotFoundError(`Please provide answer and guest ID`);
   }
 

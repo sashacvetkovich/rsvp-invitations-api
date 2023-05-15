@@ -1,12 +1,13 @@
 const pool = require("../config");
+const format = require("pg-format");
 
 const createEventDb = async ({
-  template_id,
-  event_date,
-  event_name,
-  event_description,
-  venue_name,
-  venue_address,
+  templateId: template_id,
+  eventDate: event_date,
+  eventName: event_name,
+  eventDescription: event_description,
+  venueName: venue_name,
+  venueAddress: venue_address,
 }) => {
   const { rows: eventDetails } = await pool.query(
     "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address) VALUES ($1, $2, $3, $4, $5, $6) returning *; ",
@@ -19,29 +20,15 @@ const createEventDb = async ({
       venue_address,
     ]
   );
-  return eventDetails;
+  return eventDetails[0];
 };
 
-const createEventCustomDataDb = async ({
-  event_id,
-  item_name,
-  item_styles,
-  is_editable,
-  public_name,
-  item_type,
-  item_value,
-}) => {
+const createEventCustomDataDb = async (customValuesArray) => {
   const { rows: eventCustomData } = await pool.query(
-    "INSERT INTO custom_data(event_id, item_name, item_styles, is_editable, public_name, item_type, item_value) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *; ",
-    [
-      event_id,
-      item_name,
-      item_styles,
-      is_editable,
-      public_name,
-      item_type,
-      item_value,
-    ]
+    format(
+      "INSERT INTO custom_data(item_name, item_styles, is_editable, public_name, item_type, item_value, event_id) VALUES %L returning *;",
+      customValuesArray
+    )
   );
   return eventCustomData;
 };

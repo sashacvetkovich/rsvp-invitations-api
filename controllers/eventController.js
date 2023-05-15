@@ -2,17 +2,23 @@ const Event = require("../models/Event");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { checkPermissions } = require("../utils");
-const { createEventService } = require("../services/eventService.js")
+const { createEventService } = require("../services/eventService.js");
 
 const createEvent = async (req, res) => {
-  const { customData, eventData, templateId } = req.body;
+  const { customData, eventData } = req.body;
 
   if (!customData || !eventData) {
     throw new CustomError.BadRequestError("No event info provided");
   }
 
-  const { eventDate, eventDescription, eventName, venueAddress, venueName } =
-    eventData;
+  const {
+    eventDate,
+    eventDescription,
+    eventName,
+    venueAddress,
+    venueName,
+    templateId,
+  } = eventData;
 
   if (
     !eventDate ||
@@ -25,27 +31,37 @@ const createEvent = async (req, res) => {
     throw new CustomError.BadRequestError("No event info provided");
   }
 
-  if(customData.length < 1) {
+  if (customData.length < 1) {
     throw new CustomError.BadRequestError("No custom data provided");
   }
 
+  const customDataArray = customData.map((item) => {
+    const {
+      itemName,
+      itemStyles,
+      isEditable,
+      itemValue,
+      publicName,
+      itemType,
+    } = item;
 
-  const event = await createEventService({customData, eventData});
+    if (
+      !itemName ||
+      !itemStyles ||
+      !isEditable ||
+      !itemValue ||
+      !publicName ||
+      !itemType
+    ) {
+      throw new CustomError.BadRequestError("No custom data provided");
+    }
+
+    return [itemName, itemStyles, isEditable, publicName, itemValue, itemType];
+  });
+
+  const event = await createEventService({ eventData, customDataArray });
 
   res.status(StatusCodes.CREATED).json({ success: true, event: event });
-
-  // const event = await Event.create({
-  //   eventDate,
-  //   eventDescription,
-  //   eventName,
-  //   venueAddress,
-  //   venueName,
-  //   user: req.user.userId,
-  //   invitation: templateId,
-  //   customData,
-  // });
-
-  // res.status(StatusCodes.CREATED).json({ success: true, event: event._id });
 };
 
 const getAllEvents = async (req, res) => {
