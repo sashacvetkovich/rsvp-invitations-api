@@ -2,6 +2,7 @@ const Event = require("../models/Event");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { checkPermissions } = require("../utils");
+const { isEmptyObject } = require("../helpers/common");
 const { createEventService } = require("../services/eventService.js");
 
 const createEvent = async (req, res) => {
@@ -11,52 +12,23 @@ const createEvent = async (req, res) => {
     throw new CustomError.BadRequestError("No event info provided");
   }
 
-  const {
-    eventDate,
-    eventDescription,
-    eventName,
-    venueAddress,
-    venueName,
-    templateId,
-  } = eventData;
-
-  if (
-    !eventDate ||
-    !eventDescription ||
-    !eventName ||
-    !venueAddress ||
-    !venueName ||
-    !templateId
-  ) {
+  if (isEmptyObject(eventData) || customData.length < 1) {
     throw new CustomError.BadRequestError("No event info provided");
   }
 
-  if (customData.length < 1) {
-    throw new CustomError.BadRequestError("No custom data provided");
-  }
-
   const customDataArray = customData.map((item) => {
-    const {
-      itemName,
-      itemStyles,
-      isEditable,
-      itemValue,
-      publicName,
-      itemType,
-    } = item;
-
-    if (
-      !itemName ||
-      !itemStyles ||
-      !isEditable ||
-      !itemValue ||
-      !publicName ||
-      !itemType
-    ) {
+    if (isEmptyObject(item)) {
       throw new CustomError.BadRequestError("No custom data provided");
     }
 
-    return [itemName, itemStyles, isEditable, publicName, itemValue, itemType];
+    return [
+      item.itemName,
+      item.itemStyles,
+      item.isEditable,
+      item.publicName,
+      item.itemValue,
+      item.itemType,
+    ];
   });
 
   const event = await createEventService({ eventData, customDataArray });
