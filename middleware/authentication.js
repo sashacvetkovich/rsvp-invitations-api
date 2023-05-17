@@ -5,7 +5,7 @@ const authenticateUser = async (req, res, next) => {
   const token = req.header("auth-token");
 
   if (!token) {
-    throw new CustomError.UnauthenticatedError("Authentication Invalido");
+    throw new CustomError.UnauthenticatedError("Authentication Invalid");
   }
 
   try {
