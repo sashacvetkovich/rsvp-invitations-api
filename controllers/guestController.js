@@ -8,9 +8,9 @@ const { addGuestService } = require("../services/guestService");
 
 const addGuest = async (req, res) => {
   const { eventId } = req.params;
-  const { guestName, guestComment, guestNumber } = req.body;
+  const { guestName } = req.body;
 
-  if (!guestName || !guestComment || !guestNumber || !eventId) {
+  if (!guestName || !eventId) {
     throw new CustomError.NotFoundError(`Please provide guest info`);
   }
 
@@ -22,12 +22,7 @@ const addGuest = async (req, res) => {
 
   checkPermissions(req.user, event.user_id);
 
-  const guest = await addGuestService({
-    eventId,
-    guestName,
-    guestComment,
-    guestNumber,
-  });
+  const guest = await addGuestService({ eventId, guestName });
 
   res
     .status(StatusCodes.OK)

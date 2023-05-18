@@ -1,14 +1,9 @@
 const pool = require("../config");
 
-const addGuestDb = async ({
-  eventId,
-  guestName,
-  guestComment,
-  guestNumber,
-}) => {
+const addGuestDb = async ({ eventId, guestName }) => {
   const { rows: guest } = await pool.query(
-    "INSERT INTO guest(event_id, guest_name, guest_comment, guest_number) VALUES ($1, $2, $3, $4) returning guest_id; ",
-    [eventId, guestName, guestComment, guestNumber]
+    "INSERT INTO guest(event_id, guest_name) VALUES ($1, $2) returning guest_id; ",
+    [eventId, guestName]
   );
   return guest[0];
 };
