@@ -6,6 +6,7 @@ const { isEmptyObject } = require("../helpers/common");
 const {
   createEventService,
   getSingleEventService,
+  getCurrentUserEventsService,
 } = require("../services/eventService.js");
 
 const createEvent = async (req, res) => {
@@ -49,25 +50,19 @@ const getSingleEvent = async (req, res) => {
   }
 
   checkPermissions(req.user, event.user_id);
-  res.status(StatusCodes.OK).json({ event });
+  res.status(StatusCodes.OK).json({ success: true, event });
+};
+
+const getCurrentUserEvents = async (req, res) => {
+  const events = await getCurrentUserEventsService(req.user.userId);
+
+  res
+    .status(StatusCodes.OK)
+    .json({ status: true, count: events.length, events });
 };
 
 const getAllEvents = async (req, res) => {
   const events = await Event.find({})
-    .populate({
-      path: "user",
-      select: "name",
-    })
-    .populate({
-      path: "invitation",
-      select: "name mainStyles backgroundImage",
-    });
-  res.status(StatusCodes.OK).json({ events, count: events.length });
-};
-
-const getCurrentUserEvents = async (req, res) => {
-  const events = await Event.find({ user: req.user.userId })
-    .select("invitation user eventName eventImage eventTitle eventDescription")
     .populate({
       path: "user",
       select: "name",

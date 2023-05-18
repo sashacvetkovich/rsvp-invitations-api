@@ -43,8 +43,17 @@ const getSingleEventDb = async (eventId) => {
   return event[0];
 };
 
+const getCurrentUserEventsDb = async (userId) => {
+  const { rows: events } = await pool.query(
+    "SELECT * FROM event WHERE user_id = $1",
+    [userId]
+  );
+  return events;
+};
+
 module.exports = {
   createEventDb,
   createEventCustomDataDb,
   getSingleEventDb,
+  getCurrentUserEventsDb,
 };

@@ -2,6 +2,7 @@ const {
   createEventDb,
   createEventCustomDataDb,
   getSingleEventDb,
+  getCurrentUserEventsDb
 } = require("../db/eventDb");
 const { ErrorHandler } = require("../helpers/error");
 
@@ -30,7 +31,18 @@ const getSingleEventService = async (eventId) => {
   }
 };
 
+const getCurrentUserEventsService = async (userId) => {
+  try {
+    const events = await getCurrentUserEventsDb(userId);
+
+    return events;
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
 module.exports = {
   createEventService,
   getSingleEventService,
+  getCurrentUserEventsService
 };
