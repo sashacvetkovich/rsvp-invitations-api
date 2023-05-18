@@ -1,8 +1,8 @@
-const Event = require("../models/Event");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { checkPermissions } = require("../utils");
 const { isEmptyObject } = require("../helpers/common");
+
 const {
   createEventService,
   getSingleEventService,
@@ -61,22 +61,8 @@ const getCurrentUserEvents = async (req, res) => {
     .json({ status: true, count: events.length, events });
 };
 
-const getAllEvents = async (req, res) => {
-  const events = await Event.find({})
-    .populate({
-      path: "user",
-      select: "name",
-    })
-    .populate({
-      path: "invitation",
-      select: "name mainStyles backgroundImage",
-    });
-  res.status(StatusCodes.OK).json({ events, count: events.length });
-};
-
 module.exports = {
   createEvent,
-  getAllEvents,
   getSingleEvent,
   getCurrentUserEvents,
 };

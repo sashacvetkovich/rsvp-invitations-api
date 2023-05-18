@@ -1,10 +1,9 @@
-const Invitation = require("../models/Invitation");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const {
   createTemplateService,
   getSingleTemplateService,
-  getAllTemplatesService
+  getAllTemplatesService,
 } = require("../services/templateService");
 
 const createTemplate = async (req, res) => {
@@ -19,7 +18,7 @@ const createTemplate = async (req, res) => {
 };
 
 const getAllTemplates = async (req, res) => {
-  const templates = await getAllTemplatesService()
+  const templates = await getAllTemplatesService();
 
   res.status(StatusCodes.OK).json({ templates, count: templates.length });
 };
@@ -38,46 +37,8 @@ const getSingleTemplate = async (req, res) => {
   res.status(StatusCodes.OK).json({ template });
 };
 
-const updateInvitation = async (req, res) => {
-  const { id: invitationId } = req.params;
-
-  const invitation = await Invitation.findOneAndUpdate(
-    { _id: invitationId },
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-
-  if (!invitation) {
-    throw new CustomError.NotFoundError(
-      `No invitation with id : ${invitationId}`
-    );
-  }
-
-  res.status(StatusCodes.OK).json({ invitation });
-};
-
-const deleteInvitation = async (req, res) => {
-  const { id: invitationId } = req.params;
-
-  const invitation = await Invitation.findOne({ _id: invitationId });
-
-  if (!invitation) {
-    throw new CustomError.NotFoundError(
-      `No invitaion with id : ${invitationId}`
-    );
-  }
-
-  await invitation.remove();
-  res.status(StatusCodes.OK).json({ msg: "Success! Invitation removed." });
-};
-
 module.exports = {
   createTemplate,
   getAllTemplates,
   getSingleTemplate,
-  updateInvitation,
-  deleteInvitation,
 };
