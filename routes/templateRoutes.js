@@ -10,8 +10,6 @@ const {
   createTemplate,
   getAllTemplates,
   getSingleTemplate,
-  updateInvitation,
-  deleteInvitation,
 } = require("../controllers/templateController");
 
 router
@@ -22,7 +20,5 @@ router
 router
   .route("/:id")
   .get(getSingleTemplate)
-  .patch([authenticateUser, verifyAdmin], updateInvitation)
-  .delete([authenticateUser, verifyAdmin], deleteInvitation);
 
 module.exports = router;

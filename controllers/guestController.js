@@ -1,5 +1,3 @@
-const { Guest } = require("../models/Guest");
-const Event = require("../models/Event");
 const { checkPermissions } = require("../utils");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
