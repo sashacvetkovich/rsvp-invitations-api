@@ -6,6 +6,7 @@ const {
   getAllTemplatesDb,
   getAllTemplateCategoriesDb,
   createTemplateCategoryDb,
+  getSingleTemplateCategoryDb
 } = require("../db/templateDb");
 
 const createTemplateService = async (data) => {
@@ -79,10 +80,19 @@ const createTemplateCategoryService = async (data) => {
   }
 };
 
+const getSingleTemplateCategoryService = async (categoryName) => {
+  try {
+    return await getSingleTemplateCategoryDb(categoryName);
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
 module.exports = {
   createTemplateService,
   getSingleTemplateService,
   getAllTemplatesService,
   getAllTemplateCategoriesService,
   createTemplateCategoryService,
+  getSingleTemplateCategoryService
 };

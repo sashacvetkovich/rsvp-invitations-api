@@ -41,6 +41,14 @@ const getAllTemplateCategoriesDb = async () => {
   return templateCategories;
 };
 
+const getSingleTemplateCategoryDb = async (categoryName) => {
+  const { rows: templateCategory } = await pool.query(
+    "SELECT * FROM template_categories WHERE category_name = $1",
+    [categoryName]
+  );
+  return templateCategory[0];
+};
+
 const createTemplateCategoryDb = async (data) => {
   const {
     category_name,
@@ -70,4 +78,5 @@ module.exports = {
   getSingleTemplateDb,
   getAllTemplateCategoriesDb,
   createTemplateCategoryDb,
+  getSingleTemplateCategoryDb,
 };

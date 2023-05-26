@@ -11,7 +11,8 @@ const {
   getAllTemplates,
   getSingleTemplate,
   getAllTemplateCategories,
-  createTemplateCategory
+  createTemplateCategory,
+  getSingleTemplateCategory
 } = require("../controllers/templateController");
 
 router
@@ -23,6 +24,10 @@ router
   .route("/category")
   .post([authenticateUser, verifyAdmin], createTemplateCategory)
   .get(getAllTemplateCategories);
+
+router
+  .route("/category/:name")
+  .get(getSingleTemplateCategory);
 
 router
   .route("/:id")
