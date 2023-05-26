@@ -4,7 +4,13 @@ const {
   createTemplateService,
   getSingleTemplateService,
   getAllTemplatesService,
+  getAllTemplateCategoriesService,
+  createTemplateCategoryService,
 } = require("../services/templateService");
+
+const {
+  createTemplateCategoryValidator,
+} = require("../validations/templateValidations");
 
 const createTemplate = async (req, res) => {
   req.body.user = req.user.userId;
@@ -37,8 +43,28 @@ const getSingleTemplate = async (req, res) => {
   res.status(StatusCodes.OK).json({ template });
 };
 
+const getAllTemplateCategories = async (req, res) => {
+  const templateCategories = await getAllTemplateCategoriesService();
+
+  if (!templateCategories) {
+    throw new CustomError.NotFoundError("Not found template categories");
+  }
+
+  res.status(StatusCodes.OK).json({ status: true, templateCategories });
+};
+
+const createTemplateCategory = async (req, res) => {
+  createTemplateCategoryValidator(req.body);
+
+  const templateCategory = await createTemplateCategoryService(req.body);
+
+  res.status(StatusCodes.OK).json({ status: true, templateCategory });
+};
+
 module.exports = {
   createTemplate,
   getAllTemplates,
   getSingleTemplate,
+  getAllTemplateCategories,
+  createTemplateCategory,
 };

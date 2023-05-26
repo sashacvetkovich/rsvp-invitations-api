@@ -1,11 +1,7 @@
 const pool = require("../config");
 const format = require("pg-format");
 
-const createTemplateDb = async ({
-  category,
-  preview_image,
-  template_name,
-}) => {
+const createTemplateDb = async ({ category, preview_image, template_name }) => {
   const { rows: template } = await pool.query(
     "INSERT INTO invitation_template(category, preview_image, template_name) VALUES ($1, $2, $3) returning *; ",
     [category, preview_image, template_name]
@@ -38,9 +34,40 @@ const getSingleTemplateDb = async (templateId) => {
   return template[0];
 };
 
+const getAllTemplateCategoriesDb = async () => {
+  const { rows: templateCategories } = await pool.query(
+    "SELECT * FROM template_categories"
+  );
+  return templateCategories;
+};
+
+const createTemplateCategoryDb = async (data) => {
+  const {
+    category_name,
+    category_title,
+    category_short_description,
+    category_long_description,
+    category_image,
+  } = data;
+
+  const { rows: templateCategories } = await pool.query(
+    "INSERT INTO template_categories( category_name, category_title, category_short_description, category_long_description, category_image) VALUES ($1, $2, $3, $4, $5) returning *; ",
+    [
+      category_name,
+      category_title,
+      category_short_description,
+      category_long_description,
+      category_image,
+    ]
+  );
+  return templateCategories;
+};
+
 module.exports = {
   createTemplateDb,
   createTemplateDataDb,
   getAllTemplatesDb,
   getSingleTemplateDb,
+  getAllTemplateCategoriesDb,
+  createTemplateCategoryDb,
 };
