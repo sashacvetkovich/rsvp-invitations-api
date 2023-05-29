@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { checkPermissions } = require("../utils");
-const { isEmptyObject } = require("../helpers/common");
+const { createEventValidator } = require("../validations/eventValidations");
 
 const {
   createEventService,
@@ -10,21 +10,11 @@ const {
 } = require("../services/eventService.js");
 
 const createEvent = async (req, res) => {
+  createEventValidator(req.body);
+  
   const { customData, eventInfo } = req.body;
 
-  if (!customData || !eventInfo) {
-    throw new CustomError.BadRequestError("No event info provided");
-  }
-
-  if (customData.length < 1) {
-    throw new CustomError.BadRequestError("No event info provided");
-  }
-
   const customDataArray = customData.map((item) => {
-    if (isEmptyObject(item)) {
-      throw new CustomError.BadRequestError("No custom data provided");
-    }
-
     return [
       item.itemName,
       item.itemStyles,
