@@ -16,7 +16,7 @@ const createEvent = async (req, res) => {
     throw new CustomError.BadRequestError("No event info provided");
   }
 
-  if (isEmptyObject(eventInfo) || customData.length < 1) {
+  if (customData.length < 1) {
     throw new CustomError.BadRequestError("No event info provided");
   }
 

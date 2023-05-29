@@ -9,9 +9,10 @@ const createEventDb = async ({
   venueName: venue_name,
   venueAddress: venue_address,
   userId: user_id,
+  isGroupInvite: is_group_invite,
 }) => {
   const { rows: eventDetails } = await pool.query(
-    "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *; ",
+    "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address, user_id, is_group_invite) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *; ",
     [
       template_id,
       event_date,
@@ -20,6 +21,7 @@ const createEventDb = async ({
       venue_name,
       venue_address,
       user_id,
+      is_group_invite,
     ]
   );
   return eventDetails[0];
@@ -28,7 +30,7 @@ const createEventDb = async ({
 const createEventCustomDataDb = async (customValuesArray) => {
   const { rows: eventCustomData } = await pool.query(
     format(
-      "INSERT INTO custom_data(item_name, item_styles, is_editable, public_name, item_type, item_value, event_id) VALUES %L returning *;",
+      "INSERT INTO custom_data(item_name, item_styles, is_editable, public_name, item_value, item_type, event_id) VALUES %L returning *;",
       customValuesArray
     )
   );
