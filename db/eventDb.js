@@ -2,14 +2,14 @@ const pool = require("../config");
 const format = require("pg-format");
 
 const createEventDb = async ({
-  templateId: template_id,
-  eventDate: event_date,
-  eventName: event_name,
-  eventDescription: event_description,
-  venueName: venue_name,
-  venueAddress: venue_address,
-  userId: user_id,
-  isGroupInvite: is_group_invite,
+   template_id,
+   event_date,
+   event_name,
+   event_description,
+   venue_name,
+   venue_address,
+   user_id,
+   is_group_invite,
 }) => {
   const { rows: eventDetails } = await pool.query(
     "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address, user_id, is_group_invite) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *; ",

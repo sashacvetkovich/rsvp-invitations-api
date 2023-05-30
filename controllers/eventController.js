@@ -16,16 +16,16 @@ const createEvent = async (req, res) => {
 
   const customDataArray = customData.map((item) => {
     return [
-      item.itemName,
-      item.itemStyles,
-      item.isEditable,
-      item.publicName,
-      item.itemValue,
-      item.itemType,
+      item.item_name,
+      item.item_styles,
+      item.is_editable,
+      item.public_name,
+      item.item_value,
+      item.item_type,
     ];
   });
 
-  const eventData = { ...eventInfo, userId: req.user.userId };
+  const eventData = { ...eventInfo, user_id: req.user.userId };
   const event = await createEventService({ eventData, customDataArray });
 
   res.status(StatusCodes.CREATED).json({ success: true, event: event });
