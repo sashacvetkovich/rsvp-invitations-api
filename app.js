@@ -18,6 +18,8 @@ cloudinary.config({
 
 // rest of the packages
 const cookieParser = require("cookie-parser");
+<<<<<<< HEAD
+=======
 
 // database
 const connectDB = require("./db/connect");
@@ -28,10 +30,14 @@ const invitationRouter = require("./routes/invitationRoutes");
 const eventRouter = require("./routes/eventRoutes");
 const guestRouter = require("./routes/guestRoutes");
 const uploadRouter = require("./routes/uploadRoutes");
+>>>>>>> e4e48a75e654e7c17eaae47c34f4211c209833d0
 
 // middleware
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
+
+//routes
+const routes = require("./routes");
 
 const whitelist = ["http://localhost:3000"]
 const corsOptions = {
@@ -50,26 +56,17 @@ app.use(express.json());
 app.use(fileUpload({ useTempFiles: true }));
 app.use(cookieParser(process.env.JWT_SECRET));
 
+<<<<<<< HEAD
+app.use("/api/v1", routes);
+=======
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/invitations", invitationRouter);
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/guest", guestRouter);
 app.use("/api/v1/upload", uploadRouter);
+>>>>>>> e4e48a75e654e7c17eaae47c34f4211c209833d0
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = process.env.PORT || 5000;
-
-const start = async () => {
-  try {
-    await connectDB(process.env.MONGO_URL);
-    app.listen(port, () =>
-      console.log(`Server is listening on port ${port}...`)
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-start();
+module.exports = app;

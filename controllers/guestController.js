@@ -1,34 +1,30 @@
-const { Guest } = require("../models/Guest");
-const Event = require("../models/Event");
 const { checkPermissions } = require("../utils");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const { getSingleEventService } = require("../services/eventService");
+const { addGuestService } = require("../services/guestService");
 
 const addGuest = async (req, res) => {
   const { eventId } = req.params;
   const { guestName } = req.body;
 
-  if (!guestName) {
-    throw new CustomError.NotFoundError(`Please provide guest name`);
+  if (!guestName || !eventId) {
+    throw new CustomError.NotFoundError(`Please provide guest info`);
   }
 
-  const event = await Event.findOne({ _id: eventId });
+  const event = await getSingleEventService(eventId);
 
   if (!event) {
     throw new CustomError.NotFoundError(`No event with id : ${eventId}`);
   }
-  checkPermissions(req.user, event.user._id);
 
-  const newGuest = await Guest.create({
-    guestName,
-    event: event._id,
-    user: req.user.userId,
-  });
+  checkPermissions(req.user, event.user_id);
 
-  event.guestList = [...event.guestList, newGuest];
+  const guest = await addGuestService({ eventId, guestName });
 
-  await event.save();
-  res.status(StatusCodes.OK).json({ updatedEvent: event });
+  res
+    .status(StatusCodes.OK)
+    .json({ success: true, msg: `Added guest with id ${guest.guest_id}` });
 };
 
 const updateGuestName = async (req, res) => {
@@ -86,7 +82,7 @@ const getSingleGuest = async (req, res) => {
 const updateGuestAnswer = async (req, res) => {
   const { answer, guestId } = req.body;
 
-  if ((typeof answer !== 'boolean') || !guestId) {
+  if (typeof answer !== "boolean" || !guestId) {
     throw new CustomError.NotFoundError(`Please provide answer and guest ID`);
   }
 
