@@ -57,6 +57,16 @@ const getAllTemplateCategories = async (req, res) => {
 const createTemplateCategory = async (req, res) => {
   createTemplateCategoryValidator(req.body);
 
+  const isCategoryExists = await getSingleTemplateCategoryService(
+    req.body.categoryName
+  );
+
+  if (isCategoryExists) {
+    throw new CustomError.NotFoundError(
+      `Template ${req.body.categoryName} already exists`
+    );
+  }
+
   const templateCategory = await createTemplateCategoryService(req.body);
 
   res.status(StatusCodes.OK).json({ status: true, templateCategory });

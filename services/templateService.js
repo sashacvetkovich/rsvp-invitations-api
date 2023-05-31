@@ -6,36 +6,27 @@ const {
   getAllTemplatesDb,
   getAllTemplateCategoriesDb,
   createTemplateCategoryDb,
-  getSingleTemplateCategoryDb
+  getSingleTemplateCategoryDb,
 } = require("../db/templateDb");
 
 const createTemplateService = async (data) => {
-  const { template_name, category, preview_image, template_data } = data;
+  const { templateName, category, previewImage, templateElementsData } = data;
 
   try {
     const template = await createTemplateDb({
       category,
-      preview_image,
-      template_name,
+      previewImage,
+      templateName,
     });
 
-    const templateDataWithId = template_data.map((item) => {
-      const {
-        itemName: item_name,
-        itemStyles: item_styles,
-        isEditable: is_editable,
-        exanleText: example_text,
-        publicName: public_name,
-        itemType: item_type,
-      } = item;
-
+    const templateDataWithId = templateElementsData.map((item) => {
       return [
-        item_name,
-        item_styles,
-        is_editable,
-        example_text,
-        public_name,
-        item_type,
+        item.itemName,
+        item.itemStyles,
+        item.isEditable,
+        item.exampleText,
+        item.publicName,
+        item.itemType,
         template.id,
       ];
     });

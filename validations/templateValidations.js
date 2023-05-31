@@ -2,19 +2,19 @@ const CustomError = require("../errors");
 
 const createTemplateCategoryValidator = (data) => {
   const {
-    category_name,
-    category_title,
-    category_short_description,
-    category_long_description,
-    category_image,
+    categoryName,
+    categoryTitle,
+    categoryShortDescription,
+    categoryLongDescription,
+    categoryImage,
   } = data;
 
   if (
-    !category_name ||
-    !category_title ||
-    !category_short_description ||
-    !category_long_description ||
-    !category_image
+    !categoryName ||
+    !categoryTitle ||
+    !categoryShortDescription ||
+    !categoryLongDescription ||
+    !categoryImage
   ) {
     throw new CustomError.BadRequestError(
       `Please provide template category data`
