@@ -16,6 +16,7 @@ const {
 const createTemplate = async (req, res) => {
   req.body.user = req.user.userId;
 
+  // TO DO - add validation here
   if (Object.keys(req.body).length === 0) {
     throw new CustomError.BadRequestError(`Please provide template data`);
   }
