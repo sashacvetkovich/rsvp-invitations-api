@@ -30,7 +30,7 @@ const createEventDb = async ({
 const createEventCustomDataDb = async (customValuesArray) => {
   const { rows: eventCustomData } = await pool.query(
     format(
-      "INSERT INTO custom_data(item_name, item_styles, is_editable, public_name, item_value, item_type, event_id) VALUES %L returning *;",
+      "INSERT INTO custom_data(item_name, item_styles, is_editable, item_value, item_type, event_id) VALUES %L returning *;",
       customValuesArray
     )
   );

@@ -24,7 +24,6 @@ const createEventValidator = (data) => {
     if (
       !isString(element.itemName) ||
       !isBoolean(element.isEditable) ||
-      !isString(element.publicName) ||
       !isString(element.itemValue) ||
       !isString(element.itemType)
     ) {

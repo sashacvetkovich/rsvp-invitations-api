@@ -19,7 +19,6 @@ const createEvent = async (req, res) => {
       item.itemName,
       item.itemStyles,
       item.isEditable,
-      item.publicName,
       item.itemValue,
       item.itemType,
     ];

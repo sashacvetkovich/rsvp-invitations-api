@@ -25,7 +25,6 @@ const createTemplateService = async (data) => {
         item.itemStyles,
         item.isEditable,
         item.exampleText,
-        item.publicName,
         item.itemType,
         template.id,
       ];

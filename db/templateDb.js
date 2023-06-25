@@ -12,7 +12,7 @@ const createTemplateDb = async ({ category, previewImage, templateName }) => {
 const createTemplateDataDb = async (data) => {
   const { rows: templateData } = await pool.query(
     format(
-      "INSERT INTO template_data(item_name, item_styles, is_editable, example_text, public_name, item_type, template_id) VALUES %L returning *; ",
+      "INSERT INTO template_data(item_name, item_styles, is_editable, example_text, item_type, template_id) VALUES %L returning *; ",
       data
     )
   );
