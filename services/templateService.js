@@ -10,13 +10,22 @@ const {
 } = require("../db/templateDb");
 
 const createTemplateService = async (data) => {
-  const { templateName, category, previewImage, templateElementsData } = data;
+  const {
+    templateName,
+    category,
+    previewImage,
+    previewImageSmall,
+    colors,
+    templateElementsData,
+  } = data;
 
   try {
     const template = await createTemplateDb({
+      templateName,
       category,
       previewImage,
-      templateName,
+      previewImageSmall,
+      colors,
     });
 
     const templateDataWithId = templateElementsData.map((item) => {
@@ -40,7 +49,13 @@ const createTemplateService = async (data) => {
 
 const getAllTemplatesService = async () => {
   try {
-    return await getAllTemplatesDb();
+    const allTemplates = await getAllTemplatesDb();
+    const allTemplatesWithPath = allTemplates.map((item) => ({
+      ...item,
+      path: item.template_name?.replaceAll(" ", "-").toLowerCase(),
+    }));
+
+    return allTemplatesWithPath;
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
@@ -84,5 +99,5 @@ module.exports = {
   getAllTemplatesService,
   getAllTemplateCategoriesService,
   createTemplateCategoryService,
-  getSingleTemplateCategoryService
+  getSingleTemplateCategoryService,
 };

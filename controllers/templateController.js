@@ -11,15 +11,12 @@ const {
 
 const {
   createTemplateCategoryValidator,
+  createTemplateValidator,
 } = require("../validations/templateValidations");
 
 const createTemplate = async (req, res) => {
+  createTemplateValidator(req.body);
   req.body.user = req.user.userId;
-
-  // TO DO - add validation here
-  if (Object.keys(req.body).length === 0) {
-    throw new CustomError.BadRequestError(`Please provide template data`);
-  }
 
   const template = await createTemplateService(req.body);
   res.status(StatusCodes.CREATED).json({ template });

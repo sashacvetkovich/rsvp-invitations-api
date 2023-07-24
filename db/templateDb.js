@@ -1,10 +1,16 @@
 const pool = require("../config");
 const format = require("pg-format");
 
-const createTemplateDb = async ({ category, previewImage, templateName }) => {
+const createTemplateDb = async ({
+  category,
+  previewImage,
+  templateName,
+  previewImageSmall,
+  colors
+}) => {
   const { rows: template } = await pool.query(
-    "INSERT INTO invitation_template(category, preview_image, template_name) VALUES ($1, $2, $3) returning *; ",
-    [category, previewImage, templateName]
+    "INSERT INTO invitation_template(category, preview_image, template_name, preview_image_small, colors) VALUES ($1, $2, $3, $4, $5) returning *; ",
+    [category, previewImage, templateName, previewImageSmall, colors]
   );
   return template[0];
 };
@@ -21,14 +27,14 @@ const createTemplateDataDb = async (data) => {
 
 const getAllTemplatesDb = async () => {
   const { rows: templates } = await pool.query(
-    "SELECT * FROM invitation_template"
+    "SELECT id, category, preview_image_small, template_name, colors FROM invitation_template"
   );
   return templates;
 };
 
 const getSingleTemplateDb = async (templateId) => {
   const { rows: template } = await pool.query(
-    "SELECT * ,(SELECT array_to_json(array_agg(row_to_json(template_alias))) AS template_data FROM (SELECT * FROM template_data WHERE template_id = $1) template_alias) FROM invitation_template WHERE id = $1",
+    "SELECT id, category, preview_image, template_name, colors ,(SELECT array_to_json(array_agg(row_to_json(template_alias))) AS template_data FROM (SELECT * FROM template_data WHERE template_id = $1) template_alias) FROM invitation_template WHERE id = $1",
     [templateId]
   );
   return template[0];
@@ -55,7 +61,7 @@ const createTemplateCategoryDb = async (data) => {
     categoryTitle,
     categoryShortDescription,
     categoryLongDescription,
-    categoryImage
+    categoryImage,
   } = data;
 
   const { rows: templateCategories } = await pool.query(
@@ -65,7 +71,7 @@ const createTemplateCategoryDb = async (data) => {
       categoryTitle,
       categoryShortDescription,
       categoryLongDescription,
-      categoryImage
+      categoryImage,
     ]
   );
   return templateCategories;

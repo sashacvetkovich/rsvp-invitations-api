@@ -22,4 +22,27 @@ const createTemplateCategoryValidator = (data) => {
   }
 };
 
-module.exports = { createTemplateCategoryValidator };
+const createTemplateValidator = (data) => {
+  const {
+    templateName,
+    category,
+    previewImage,
+    previewImageSmall,
+    colors,
+    templateElementsData,
+  } = data;
+
+  if (
+    !templateName ||
+    !category ||
+    !previewImage ||
+    !previewImageSmall ||
+    !colors ||
+    // TO DO - improve templateElementsData validation
+    !templateElementsData.length
+  ) {
+    throw new CustomError.BadRequestError(`Please provide template data`);
+  }
+};
+
+module.exports = { createTemplateCategoryValidator, createTemplateValidator };
