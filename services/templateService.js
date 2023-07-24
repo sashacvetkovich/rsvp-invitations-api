@@ -7,6 +7,7 @@ const {
   getAllTemplateCategoriesDb,
   createTemplateCategoryDb,
   getSingleTemplateCategoryDb,
+  getTemplateRecommendationDb,
 } = require("../db/templateDb");
 
 const createTemplateService = async (data) => {
@@ -69,6 +70,14 @@ const getSingleTemplateService = async (templateId) => {
   }
 };
 
+const getTemplateRecommendationService = async (category) => {
+  try {
+    return await getTemplateRecommendationDb(category);
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
 const getAllTemplateCategoriesService = async () => {
   try {
     return await getAllTemplateCategoriesDb();
@@ -100,4 +109,5 @@ module.exports = {
   getAllTemplateCategoriesService,
   createTemplateCategoryService,
   getSingleTemplateCategoryService,
+  getTemplateRecommendationService,
 };

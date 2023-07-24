@@ -3,6 +3,7 @@ const CustomError = require("../errors");
 const {
   createTemplateService,
   getSingleTemplateService,
+  getTemplateRecommendationService,
   getAllTemplatesService,
   getAllTemplateCategoriesService,
   createTemplateCategoryService,
@@ -30,13 +31,24 @@ const getAllTemplates = async (req, res) => {
 
 const getSingleTemplate = async (req, res) => {
   const { id: templateId } = req.params;
+  const { recommendation } = req.body;
 
-  const template = await getSingleTemplateService(templateId);
+  const template = await getSingleTemplateService(templateId, recommendation);
 
   if (!template) {
     throw new CustomError.NotFoundError(
       `No invitation with id : ${templateId}`
     );
+  }
+
+  if (recommendation) {
+    const recommendation = await getTemplateRecommendationService(
+      template.category
+    );
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ status: true, template, recommendation });
   }
 
   res.status(StatusCodes.OK).json({ template });
