@@ -1,42 +1,52 @@
 const { registerService, loginService } = require("../services/authService");
 
 const registerController = async (req, res) => {
-  const { token, refreshToken, user } = await registerService(req.body);
+  const { user } = await registerService(req.body);
 
   // if (process.env.NODE_ENV !== "test") {
   //   await mail.signupMail(user.email, user.fullname.split(" ")[0]);
   // }
 
-  res.header("auth-token", token);
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    sameSite: process.env.NODE_ENV === "development" ? true : "none",
-    secure: process.env.NODE_ENV === "development" ? false : true,
-  });
   res.status(201).json({
-    token,
+    status: true,
     user,
   });
 };
 
 const loginController = async (req, res) => {
   const { email, password } = req.body;
-  const { token, refreshToken, user } = await loginService(
+  const { accessToken, refreshToken, user } = await loginService(
     email,
     password
   );
 
-  res.header("auth-token", token);
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === "development" ? true : "none",
-    secure: process.env.NODE_ENV === "development" ? false : true,
+    secure: true,
+    sameSite: "None",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    maxAge: 60 * 1000,
+  });
+
   res.status(200).json({
-    token,
+    accessToken,
     user,
   });
 };
+
+const refreshTokenController = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.refreshToken) return res.sendStatus(401);
+  const refreshToken = cookies.refreshToken;
+
+
+}
 
 module.exports = {
   registerController,

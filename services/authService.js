@@ -5,12 +5,13 @@ const validateUser = require("../helpers/validateUser");
 const {
   getUserByEmailDb,
   createUserDb,
-  getUserByUsernameDb,
+  updateRefreshTokenDb,
+  getUserByRefreshTokenDb
 } = require("../db/authDb");
 
-const signToken = async (data) => {
+const signAccessToken = async (data) => {
   try {
-    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "1d" });
+    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "60s" });
   } catch (error) {
     console.log(error);
     throw new ErrorHandler(500, "An error occurred");
@@ -19,7 +20,7 @@ const signToken = async (data) => {
 
 const signRefreshToken = async (data) => {
   try {
-    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "20d" });
+    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "30d" });
   } catch (error) {
     console.log(error);
     throw new ErrorHandler(500, error.message);
@@ -28,8 +29,8 @@ const signRefreshToken = async (data) => {
 
 const registerService = async (user) => {
   try {
-    const { password, email, fullname, username } = user;
-    if (!email || !password || !fullname || !username) {
+    const { password, email, fullname } = user;
+    if (!email || !password || !fullname) {
       throw new ErrorHandler(401, "all fields required");
     }
 
@@ -38,14 +39,9 @@ const registerService = async (user) => {
       const hashedPassword = await bcrypt.hash(password, salt);
 
       const userByEmail = await getUserByEmailDb(email);
-      const userByUsername = await getUserByUsernameDb(username);
 
       if (userByEmail) {
         throw new ErrorHandler(401, "email taken already");
-      }
-
-      if (userByUsername) {
-        throw new ErrorHandler(401, "username taken already");
       }
 
       const newUser = await createUserDb({
@@ -53,22 +49,10 @@ const registerService = async (user) => {
         password: hashedPassword,
       });
 
-      const token = await signToken({
-        id: newUser.user_id,
-        roles: newUser.roles,
-      });
-      const refreshToken = await signRefreshToken({
-        id: newUser.user_id,
-        roles: newUser.roles,
-      });
-
       return {
-        token,
-        refreshToken,
         user: {
           user_id: newUser.user_id,
           fullname: newUser.fullname,
-          username: newUser.username,
           email: newUser.email,
         },
       };
@@ -103,13 +87,16 @@ const loginService = async (email, password) => {
       throw new ErrorHandler(403, "Email or password incorrect.");
     }
 
-    const token = await signToken({ id: user_id, roles });
+    const accessToken = await signAccessToken({ id: user_id, roles });
     const refreshToken = await signRefreshToken({
       id: user_id,
       roles,
     });
+
+    await updateRefreshTokenDb({ refreshToken, email });
+
     return {
-      token,
+      accessToken,
       refreshToken,
       user: {
         user_id,
@@ -122,4 +109,27 @@ const loginService = async (email, password) => {
   }
 };
 
-module.exports = { registerService, loginService };
+const refreshTokenService = async (refreshToken) => {
+  const foundUser = await getUserByRefreshTokenDb(refreshToken);
+  if (!foundUser) return res.sendStatus(403); //Forbidden
+  // evaluate jwt
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+    if (err || foundUser.user_id !== decoded.id) return res.sendStatus(403);
+    console.log('tu smo')
+    
+    // const roles = Object.values(foundUser.roles);
+    // const accessToken = jwt.sign(
+    //   {
+    //     UserInfo: {
+    //       username: decoded.username,
+    //       roles: roles,
+    //     },
+    //   },
+    //   process.env.ACCESS_TOKEN_SECRET,
+    //   { expiresIn: "10s" }
+    // );
+    // res.json({ roles, accessToken });
+  });
+};
+
+module.exports = { registerService, loginService, refreshTokenService};

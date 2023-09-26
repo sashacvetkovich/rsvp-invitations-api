@@ -30,7 +30,7 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use(cors(corsOptions));
 
 app.use(express.json());
-app.use(cookieParser(process.env.JWT_SECRET));
+app.use(cookieParser());
 
 app.use("/api/v1", routes);
 
