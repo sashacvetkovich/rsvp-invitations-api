@@ -2,7 +2,7 @@ const pool = require("../config");
 
 const getUserByRefreshTokenDb = async (refreshToken) => {
   const { rows: user } = await pool.query(
-    "SELECT user_id from users WHERE refresh_token = $1",
+    "SELECT user_id, roles from users WHERE refresh_token = $1",
     [refreshToken]
   );
   return user[0];

@@ -1,5 +1,5 @@
 const CustomError = require("../errors");
-const { isTokenValid } = require("../utils");
+const { isAccessTokenValid } = require("../utils");
 
 const authenticateUser = async (req, res, next) => {
   const token = req.cookies?.accessToken
@@ -9,7 +9,7 @@ const authenticateUser = async (req, res, next) => {
   }
 
   try {
-    const { id, roles } = isTokenValid({ token });
+    const { id, roles } = isAccessTokenValid({ token });
     req.user = { userId: id, roles };
     next();
   } catch (error) {

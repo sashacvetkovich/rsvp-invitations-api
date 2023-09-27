@@ -1,31 +1,17 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const { ErrorHandler } = require("../helpers/error");
 const validateUser = require("../helpers/validateUser");
+const {
+  signAccessToken,
+  signRefreshToken,
+  isRefreshTokenValid,
+} = require("../utils");
 const {
   getUserByEmailDb,
   createUserDb,
   updateRefreshTokenDb,
-  getUserByRefreshTokenDb
+  getUserByRefreshTokenDb,
 } = require("../db/authDb");
-
-const signAccessToken = async (data) => {
-  try {
-    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "60s" });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, "An error occurred");
-  }
-};
-
-const signRefreshToken = async (data) => {
-  try {
-    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "30d" });
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler(500, error.message);
-  }
-};
 
 const registerService = async (user) => {
   try {
@@ -71,7 +57,6 @@ const loginService = async (email, password) => {
     }
 
     const user = await getUserByEmailDb(email);
-
     if (!user) {
       throw new ErrorHandler(403, "Email or password incorrect.");
     }
@@ -88,12 +73,17 @@ const loginService = async (email, password) => {
     }
 
     const accessToken = await signAccessToken({ id: user_id, roles });
-    const refreshToken = await signRefreshToken({
-      id: user_id,
-      roles,
-    });
 
-    await updateRefreshTokenDb({ refreshToken, email });
+    let refreshToken = user.refresh_token;
+
+    if (!refreshToken) {
+      refreshToken = await signRefreshToken({
+        id: user_id,
+        roles,
+      });
+
+      await updateRefreshTokenDb({ refreshToken, email });
+    }
 
     return {
       accessToken,
@@ -110,26 +100,24 @@ const loginService = async (email, password) => {
 };
 
 const refreshTokenService = async (refreshToken) => {
-  const foundUser = await getUserByRefreshTokenDb(refreshToken);
-  if (!foundUser) return res.sendStatus(403); //Forbidden
-  // evaluate jwt
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-    if (err || foundUser.user_id !== decoded.id) return res.sendStatus(403);
-    console.log('tu smo')
-    
-    // const roles = Object.values(foundUser.roles);
-    // const accessToken = jwt.sign(
-    //   {
-    //     UserInfo: {
-    //       username: decoded.username,
-    //       roles: roles,
-    //     },
-    //   },
-    //   process.env.ACCESS_TOKEN_SECRET,
-    //   { expiresIn: "10s" }
-    // );
-    // res.json({ roles, accessToken });
-  });
+  try {
+    const foundUser = await getUserByRefreshTokenDb(refreshToken);
+    if (!foundUser) return res.sendStatus(403); //Forbidden
+
+    const isTokenValid = isRefreshTokenValid(refreshToken, foundUser);
+    if (isTokenValid) {
+      const accessToken = await signAccessToken({
+        id: foundUser.user_id,
+        roles: foundUser.roles,
+      });
+
+      return accessToken;
+    }
+
+    return null;
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
 };
 
-module.exports = { registerService, loginService, refreshTokenService};
+module.exports = { registerService, loginService, refreshTokenService };
