@@ -9,9 +9,15 @@ const {
 const {
   getUserByEmailDb,
   createUserDb,
+  createGoogleUserDb,
+  updateGoogleUserDb,
   updateRefreshTokenDb,
   getUserByRefreshTokenDb,
 } = require("../db/authDb");
+const {
+  getGoogleOAuthTokens,
+  getGoogleUser,
+} = require("../helpers/googleAuth");
 
 const registerService = async (user) => {
   try {
@@ -120,4 +126,83 @@ const refreshTokenService = async (refreshToken) => {
   }
 };
 
-module.exports = { registerService, loginService, refreshTokenService };
+const googleAuthService = async (code) => {
+  try {
+    const { id_token, access_token } = await getGoogleOAuthTokens({ code });
+    const googleUser = await getGoogleUser({ id_token, access_token });
+    if (!googleUser.verified_email) {
+      throw new ErrorHandler(403, "Google account is not verified.");
+    }
+    const { email, given_name, family_name, id, picture } = googleUser;
+
+    const userInDb = await getUserByEmailDb(email);
+
+    if (!userInDb) {
+      const userData = {
+        email,
+        isVerified: true,
+        fullname: `${given_name} ${family_name}`,
+        googleId: id,
+        userImage: picture,
+      };
+      const newUser = await createGoogleUserDb(userData);
+      const refreshToken = await signRefreshToken({
+        id: newUser.user_id,
+        roles: newUser.roles,
+      });
+
+      const accessToken = await signAccessToken({
+        id: newUser.user_id,
+        roles: newUser.roles,
+      });
+
+      await updateRefreshTokenDb({ refreshToken, email });
+
+      return { user: newUser, refreshToken, accessToken };
+    }
+
+    // User is in DB but manually created
+    if (!userInDb.google_id) {
+      const user = await updateGoogleUserDb({
+        email,
+        googleId: id,
+        isVerified: true,
+        userImage: picture,
+      });
+      const refreshToken = await signRefreshToken({
+        id: user.user_id,
+        roles: user.roles,
+      });
+
+      const accessToken = await signAccessToken({
+        id: user.user_id,
+        roles: user.roles,
+      });
+
+      await updateRefreshTokenDb({ refreshToken, email });
+      return { user, refreshToken, accessToken };
+    }
+
+    const refreshToken = await signRefreshToken({
+      id: userInDb.user_id,
+      roles: userInDb.roles,
+    });
+
+    const accessToken = await signAccessToken({
+      id: userInDb.user_id,
+      roles: userInDb.roles,
+    });
+    
+    await updateRefreshTokenDb({ refreshToken, email });
+    return { user: userInDb, refreshToken, accessToken };
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+module.exports = {
+  registerService,
+  loginService,
+  refreshTokenService,
+  googleAuthService,
+};

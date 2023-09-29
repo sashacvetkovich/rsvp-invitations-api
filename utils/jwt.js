@@ -36,9 +36,30 @@ const isRefreshTokenValid = (refreshToken, foundUser) => {
   return isValid;
 };
 
+
+const attachCookiesToResponse = ({ res, accessToken, refreshToken }) => {
+  const oneDay = 1000 * 60 * 60 * 24;
+  const longerExp = 1000 * 60 * 60 * 24 * 365;
+
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: true,
+    signed: true,
+    expires: new Date(Date.now() + oneDay),
+  });
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    signed: true,
+    expires: new Date(Date.now() + longerExp),
+  });
+};
+
 module.exports = {
   signAccessToken,
   signRefreshToken,
   isAccessTokenValid,
   isRefreshTokenValid,
+  attachCookiesToResponse
 };
