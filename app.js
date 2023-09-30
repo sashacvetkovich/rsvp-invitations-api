@@ -1,8 +1,7 @@
 require("dotenv").config();
 require("express-async-errors");
 const cors = require("cors");
-const corsOptions = require("./config/index")
-
+const { corsOptions } = require("./config/index");
 // express
 const express = require("express");
 const app = express();
@@ -26,11 +25,11 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 //routes
 const routes = require("./routes");
 
-app.use(fileUpload({ useTempFiles: true }));
 app.use(cors(corsOptions));
+app.use(fileUpload({ useTempFiles: true }));
 
 app.use(express.json());
-app.use(cookieParser(process.env.ACCESS_TOKEN_SECRET));
+app.use(cookieParser());
 
 app.use("/api/v1", routes);
 

@@ -34,7 +34,7 @@ const loginController = async (req, res) => {
 };
 
 const refreshTokenController = async (req, res) => {
-  const cookies = req.signedCookies;
+  const cookies = req.cookies;
   if (!cookies?.refreshToken) return res.sendStatus(401);
   const refreshToken = cookies.refreshToken;
   const accessToken = await refreshTokenService(refreshToken);

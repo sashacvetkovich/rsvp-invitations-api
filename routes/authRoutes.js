@@ -13,6 +13,5 @@ router.post("/login", loginController);
 router.get("/refresh", refreshTokenController);
 router.get("/google", googleAuthController);
 // router.get("/logout", logout);
-// router.post("/getuser", getUserData);
 
 module.exports = router;
