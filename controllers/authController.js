@@ -65,7 +65,7 @@ const googleAuthController = async (req, res) => {
     accessToken: data.accessToken,
     refreshToken: data.refreshToken,
   });
-  res.redirect(process.env.ORIGIN);
+  res.redirect(`${process.env.ORIGIN}/redirecting`);
 };
 
 module.exports = {
