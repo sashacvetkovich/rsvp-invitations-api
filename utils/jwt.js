@@ -6,7 +6,7 @@ const isAccessTokenValid = ({ token }) =>
 const signAccessToken = async (data) => {
   try {
     return jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "60s",
+      expiresIn: "60m",
     });
   } catch (error) {
     console.log(error);

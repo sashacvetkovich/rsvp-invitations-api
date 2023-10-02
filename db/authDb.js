@@ -10,7 +10,7 @@ const getUserByRefreshTokenDb = async (refreshToken) => {
 
 const getUserByEmailDb = async (email) => {
   const { rows: user } = await pool.query(
-    `SELECT users.*, cart.id AS cart_id FROM users LEFT JOIN cart on cart.user_id = users.user_id WHERE LOWER(email) = LOWER($1)`,
+    `SELECT users.* FROM users WHERE LOWER(email) = LOWER($1)`,
     [email]
   );
   return user[0];

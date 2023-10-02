@@ -14,8 +14,7 @@ const createEventValidator = (data) => {
     !isString(eventInfo.eventName) ||
     !isString(eventInfo.venueAddress) ||
     !isString(eventInfo.venueName) ||
-    !Number.isInteger(eventInfo.templateId) ||
-    !isBoolean(eventInfo.isGroupInvite)
+    !Number.isInteger(eventInfo.templateId)
   ) {
     throw new CustomError.BadRequestError("Please provide valid event data2");
   }

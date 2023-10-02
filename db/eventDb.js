@@ -9,10 +9,9 @@ const createEventDb = async ({
    venueName,
    venueAddress,
    userId,
-   isGroupInvite,
 }) => {
   const { rows: eventDetails } = await pool.query(
-    "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address, user_id, is_group_invite) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *; ",
+    "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *; ",
     [
       templateId,
       eventDate,
@@ -21,7 +20,6 @@ const createEventDb = async ({
       venueName,
       venueAddress,
       userId,
-      isGroupInvite,
     ]
   );
   return eventDetails[0];
@@ -47,7 +45,7 @@ const getSingleEventDb = async (eventId) => {
 
 const getCurrentUserEventsDb = async (userId) => {
   const { rows: events } = await pool.query(
-    "SELECT * FROM event WHERE user_id = $1",
+    "SELECT event_id, event_date, event_name FROM event WHERE user_id = $1",
     [userId]
   );
   return events;

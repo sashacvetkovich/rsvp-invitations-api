@@ -2,13 +2,16 @@ const { checkPermissions } = require("../utils");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { getSingleEventService } = require("../services/eventService");
-const { addGuestService } = require("../services/guestService");
+const {
+  addGuestService,
+  getEventGuestListService,
+} = require("../services/guestService");
 
 const addGuest = async (req, res) => {
   const { eventId } = req.params;
-  const { guestName } = req.body;
+  const { guestName, guestEmail, invitedGuestNumber } = req.body;
 
-  if (!guestName || !eventId) {
+  if (!guestName || !eventId || !guestEmail || !invitedGuestNumber) {
     throw new CustomError.NotFoundError(`Please provide guest info`);
   }
 
@@ -20,7 +23,15 @@ const addGuest = async (req, res) => {
 
   checkPermissions(req.user, event.user_id);
 
-  const guest = await addGuestService({ eventId, guestName });
+  const guest = await addGuestService({
+    eventId,
+    guestName,
+    guestEmail,
+    invitedGuestNumber,
+    userId: req.user.userId,
+    isCustom: false,
+    isAnswered: false
+  });
 
   res
     .status(StatusCodes.OK)
@@ -51,14 +62,15 @@ const updateGuestName = async (req, res) => {
 const getEventGuestList = async (req, res) => {
   const { eventId } = req.params;
 
-  const event = await Event.findOne({ _id: eventId }).select("guestList user");
+  const guests = await getEventGuestListService(eventId);
 
-  if (!event) {
-    throw new CustomError.NotFoundError(`No event with id : ${eventId}`);
+  if (!guests.length) {
+    throw new CustomError.NotFoundError(`No guests with event id : ${eventId}`);
   }
+  const userId = parseInt(guests[0].user_id);
+  checkPermissions(req.user, userId);
 
-  checkPermissions(req.user, event.user._id);
-  res.status(StatusCodes.OK).json({ guestList: event.guestList });
+  res.status(StatusCodes.OK).json({ guestList: guests });
 };
 
 const getSingleGuest = async (req, res) => {

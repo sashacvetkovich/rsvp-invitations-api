@@ -14,7 +14,7 @@ const {
 
 router.route("/").post(authenticateUser, createEvent);
 
-router.route("/showAllMyEvents").get(authenticateUser, getCurrentUserEvents);
+router.route("/myevents").get(authenticateUser, getCurrentUserEvents);
 
 router.route("/:id").get(authenticateUser, getSingleEvent);
 
