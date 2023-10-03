@@ -12,9 +12,14 @@ const isObject = (value) => {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 };
 
+const isNumber = (value) => {
+  return typeof value === "number";
+};
+
 module.exports = {
   isEmptyObject,
   isString,
   isBoolean,
   isObject,
+  isNumber,
 };

@@ -5,6 +5,7 @@ const {
   googleAuthService,
 } = require("../services/authService");
 const { attachCookiesToResponse } = require("../utils/jwt");
+const { StatusCodes } = require("http-status-codes");
 
 const registerController = async (req, res) => {
   const { user } = await registerService(req.body);
@@ -27,7 +28,7 @@ const loginController = async (req, res) => {
   );
 
   attachCookiesToResponse({ res, refreshToken, accessToken });
-  res.status(200).json({
+  res.status(StatusCodes.OK).json({
     accessToken,
     user,
   });
@@ -47,7 +48,7 @@ const refreshTokenController = async (req, res) => {
   }
 
   attachCookiesToResponse({ res, refreshToken, accessToken });
-  res.status(200).json({
+  res.status(StatusCodes.OK).json({
     accessToken,
   });
 };
