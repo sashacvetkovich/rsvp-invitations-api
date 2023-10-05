@@ -1,8 +1,9 @@
 const {
   addGuestDb,
+  addCustomGuestDb,
   getEventGuestListDb,
   getSingleGuestDb,
-  updateGuestAnswerDb
+  updateGuestAnswerDb,
 } = require("../db/guestDb");
 const { ErrorHandler } = require("../helpers/error");
 const { v4: uuid } = require("uuid");
@@ -11,6 +12,17 @@ const addGuestService = async (guestData) => {
   try {
     const guestDataWithId = { ...guestData, guestId: uuid() };
     const guest = await addGuestDb(guestDataWithId);
+
+    return guest;
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const addCustomGuestService = async (guestData) => {
+  try {
+    const guestDataWithId = { ...guestData, guestId: uuid() };
+    const guest = await addCustomGuestDb(guestDataWithId);
 
     return guest;
   } catch (error) {
@@ -46,12 +58,12 @@ const updateGuestAnswerService = async (answerData) => {
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
-}
+};
 
 module.exports = {
   addGuestService,
+  addCustomGuestService,
   getEventGuestListService,
   getSingleGuestService,
-  updateGuestAnswerService
-
+  updateGuestAnswerService,
 };

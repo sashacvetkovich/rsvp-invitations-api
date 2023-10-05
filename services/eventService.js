@@ -2,9 +2,12 @@ const {
   createEventDb,
   createEventCustomDataDb,
   getSingleEventDb,
-  getCurrentUserEventsDb
+  getCurrentUserEventsDb,
+  enableCustomGuestsDb
 } = require("../db/eventDb");
 const { ErrorHandler } = require("../helpers/error");
+const { v4: uuid } = require("uuid");
+
 
 const createEventService = async ({ customDataArray, eventData }) => {
   try {
@@ -41,8 +44,20 @@ const getCurrentUserEventsService = async (userId) => {
   }
 };
 
+const enableCustomGuestsService = async (eventId) => {
+  try {
+    const customShareId = uuid();
+    const event = await enableCustomGuestsDb({eventId, customShareId});
+
+    return event;
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
 module.exports = {
   createEventService,
   getSingleEventService,
-  getCurrentUserEventsService
+  getCurrentUserEventsService,
+  enableCustomGuestsService
 };

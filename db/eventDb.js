@@ -2,13 +2,13 @@ const pool = require("../config");
 const format = require("pg-format");
 
 const createEventDb = async ({
-   templateId,
-   eventDate,
-   eventName,
-   eventDescription,
-   venueName,
-   venueAddress,
-   userId,
+  templateId,
+  eventDate,
+  eventName,
+  eventDescription,
+  venueName,
+  venueAddress,
+  userId,
 }) => {
   const { rows: eventDetails } = await pool.query(
     "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *; ",
@@ -51,9 +51,18 @@ const getCurrentUserEventsDb = async (userId) => {
   return events;
 };
 
+const enableCustomGuestsDb = async ({ eventId, customShareId }) => {
+  const { rows: event } = await pool.query(
+    "UPDATE event SET custom_share_id = $1 WHERE event_id = $2 returning custom_share_id",
+    [customShareId, eventId]
+  );
+  return event[0];
+};
+
 module.exports = {
   createEventDb,
   createEventCustomDataDb,
   getSingleEventDb,
   getCurrentUserEventsDb,
+  enableCustomGuestsDb,
 };

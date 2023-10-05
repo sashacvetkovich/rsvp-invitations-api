@@ -13,6 +13,7 @@ const {
   updateGoogleUserDb,
   updateRefreshTokenDb,
   getUserByRefreshTokenDb,
+  deleteRefreshTokenDb,
 } = require("../db/authDb");
 const {
   getGoogleOAuthTokens,
@@ -192,9 +193,21 @@ const googleAuthService = async (code) => {
       id: userInDb.user_id,
       roles: userInDb.roles,
     });
-    
+
     await updateRefreshTokenDb({ refreshToken, email });
     return { user: userInDb, refreshToken, accessToken };
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const logoutService = async (refreshToken) => {
+  try {
+    const foundUser = await getUserByRefreshTokenDb(refreshToken);
+
+    if (foundUser) await deleteRefreshTokenDb(refreshToken);
+
+    return foundUser;
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
@@ -205,4 +218,5 @@ module.exports = {
   loginService,
   refreshTokenService,
   googleAuthService,
+  logoutService,
 };

@@ -1,8 +1,10 @@
+const { json } = require("express");
 const {
   registerService,
   loginService,
   refreshTokenService,
   googleAuthService,
+  logoutService,
 } = require("../services/authService");
 const { attachCookiesToResponse } = require("../utils/jwt");
 const { StatusCodes } = require("http-status-codes");
@@ -69,9 +71,38 @@ const googleAuthController = async (req, res) => {
   res.redirect(`${process.env.ORIGIN}/redirecting`);
 };
 
+const logoutController = async (req, res) => {
+  const  refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+    });
+    res.status(StatusCodes.OK).json({ status: true });
+  }
+
+  await logoutService(refreshToken);
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+  res.status(StatusCodes.OK).json({ status: true });
+};
+
 module.exports = {
   registerController,
   loginController,
   refreshTokenController,
   googleAuthController,
+  logoutController,
 };

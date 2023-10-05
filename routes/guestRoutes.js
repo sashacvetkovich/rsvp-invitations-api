@@ -5,6 +5,7 @@ const { authenticateUser } = require("../middleware/authentication");
 
 const {
   addGuest,
+  addCustomGuest,
   updateGuestName,
   getEventGuestList,
   getSingleGuest,
@@ -14,6 +15,7 @@ const {
 router.route("/updateAnswer").post(updateGuestAnswer);
 router.route("/add/:eventId").post(authenticateUser, addGuest);
 router.route("/event/:eventId").get(authenticateUser, getEventGuestList);
+router.route("/customguest").post(addCustomGuest);
 
 router
   .route("/:id")

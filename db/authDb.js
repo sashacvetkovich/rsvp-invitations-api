@@ -63,11 +63,20 @@ const updateRefreshTokenDb = async ({ email, refreshToken }) => {
   return user[0];
 };
 
+const deleteRefreshTokenDb = async (refreshToken) => {
+  const { rows: user } = await pool.query(
+    `UPDATE users SET refresh_token = '' WHERE refresh_token = $1 returning user_id`,
+    [refreshToken]
+  );
+  return user[0];
+};
+
 module.exports = {
   getUserByRefreshTokenDb,
   getUserByEmailDb,
   createUserDb,
   updateRefreshTokenDb,
   createGoogleUserDb,
-  updateGoogleUserDb
+  updateGoogleUserDb,
+  deleteRefreshTokenDb
 };

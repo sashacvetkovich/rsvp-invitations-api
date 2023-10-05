@@ -4,6 +4,7 @@ const CustomError = require("../errors");
 const { getSingleEventService } = require("../services/eventService");
 const {
   addGuestService,
+  addCustomGuestService,
   getEventGuestListService,
   getSingleGuestService,
   updateGuestAnswerService,
@@ -11,6 +12,7 @@ const {
 
 const {
   updateGuestAnswerValidator,
+  addCustomGuestValidator,
 } = require("../validations/guestValidations");
 
 const addGuest = async (req, res) => {
@@ -37,11 +39,39 @@ const addGuest = async (req, res) => {
     userId: req.user.userId,
     isCustom: false,
     isAnswered: false,
+    isComing: false
   });
 
   res
     .status(StatusCodes.OK)
     .json({ success: true, msg: `Added guest with id ${guest.guest_id}` });
+};
+
+const addCustomGuest = async (req, res) => {
+  const { eventId, customShareId } = req.body;
+
+  if (!eventId) {
+    throw new CustomError.BadRequestError("Please provide valid guest info");
+  }
+  addCustomGuestValidator(req.body);
+
+  const event = await getSingleEventService(eventId);
+
+  if (!event || event.custom_share_id !== customShareId )  {
+    throw new CustomError.BadRequestError("Custom guests option is not enabled");
+  }
+  
+  const guest = await addCustomGuestService({
+    ...req.body,
+    eventId,
+    isCustom: true,
+    isAnswered: true,
+    isComing: true
+  })
+
+  res
+    .status(StatusCodes.OK)
+    .json({ success: true, msg: `Added guest with id ${guest.guest_id}`});
 };
 
 const updateGuestName = async (req, res) => {
@@ -116,6 +146,7 @@ const updateGuestAnswer = async (req, res) => {
 
 module.exports = {
   addGuest,
+  addCustomGuest,
   updateGuestName,
   getEventGuestList,
   getSingleGuest,
