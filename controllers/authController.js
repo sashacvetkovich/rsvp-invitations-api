@@ -1,4 +1,3 @@
-const { json } = require("express");
 const {
   registerService,
   loginService,
@@ -31,8 +30,14 @@ const loginController = async (req, res) => {
 
   attachCookiesToResponse({ res, refreshToken, accessToken });
   res.status(StatusCodes.OK).json({
-    accessToken,
-    user,
+    status: true,
+    user: {
+      email:user.email,
+      fullname:user.fullname,
+      roles: user.roles,
+      user_image: user.user_image,
+      is_verified: user.is_verified
+    }
   });
 };
 

@@ -95,11 +95,7 @@ const loginService = async (email, password) => {
     return {
       accessToken,
       refreshToken,
-      user: {
-        user_id,
-        fullname,
-        username,
-      },
+      user
     };
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);

@@ -39,7 +39,7 @@ const addGuest = async (req, res) => {
     userId: req.user.userId,
     isCustom: false,
     isAnswered: false,
-    isComing: false
+    isComing: false,
   });
 
   res
@@ -57,21 +57,23 @@ const addCustomGuest = async (req, res) => {
 
   const event = await getSingleEventService(eventId);
 
-  if (!event || event.custom_share_id !== customShareId )  {
-    throw new CustomError.BadRequestError("Custom guests option is not enabled");
+  if (!event || event.custom_share_id !== customShareId) {
+    throw new CustomError.BadRequestError(
+      "Custom guests option is not enabled"
+    );
   }
-  
+
   const guest = await addCustomGuestService({
     ...req.body,
     eventId,
     isCustom: true,
     isAnswered: true,
-    isComing: true
-  })
+    isComing: true,
+  });
 
   res
     .status(StatusCodes.OK)
-    .json({ success: true, msg: `Added guest with id ${guest.guest_id}`});
+    .json({ success: true, msg: `Added guest with id ${guest.guest_id}` });
 };
 
 const updateGuestName = async (req, res) => {
@@ -98,15 +100,15 @@ const updateGuestName = async (req, res) => {
 const getEventGuestList = async (req, res) => {
   const { eventId } = req.params;
 
-  const guests = await getEventGuestListService(eventId);
+  const { guestList, eventInfo } = await getEventGuestListService(eventId);
 
-  if (!guests.length) {
+  if (!guestList.length) {
     throw new CustomError.NotFoundError(`No guests with event id : ${eventId}`);
   }
-  const userId = parseInt(guests[0].user_id);
+  const userId = parseInt(guestList[0].user_id);
   checkPermissions(req.user, userId);
 
-  res.status(StatusCodes.OK).json({ guestList: guests });
+  res.status(StatusCodes.OK).json({ status: true, guestList, eventInfo });
 };
 
 const getSingleGuest = async (req, res) => {

@@ -10,7 +10,7 @@ const getUserByRefreshTokenDb = async (refreshToken) => {
 
 const getUserByEmailDb = async (email) => {
   const { rows: user } = await pool.query(
-    `SELECT users.* FROM users WHERE LOWER(email) = LOWER($1)`,
+    `SELECT * FROM users WHERE LOWER(email) = LOWER($1)`,
     [email]
   );
   return user[0];

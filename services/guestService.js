@@ -5,6 +5,8 @@ const {
   getSingleGuestDb,
   updateGuestAnswerDb,
 } = require("../db/guestDb");
+
+const { getBasicEventInfoDb } = require("../db/eventDb");
 const { ErrorHandler } = require("../helpers/error");
 const { v4: uuid } = require("uuid");
 
@@ -33,8 +35,9 @@ const addCustomGuestService = async (guestData) => {
 const getEventGuestListService = async (eventId) => {
   try {
     const guestList = await getEventGuestListDb(eventId);
+    const eventInfo = await getBasicEventInfoDb(eventId);
 
-    return guestList;
+    return { guestList, eventInfo };
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }

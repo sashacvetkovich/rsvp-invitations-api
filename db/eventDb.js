@@ -51,6 +51,14 @@ const getCurrentUserEventsDb = async (userId) => {
   return events;
 };
 
+const getBasicEventInfoDb = async (eventId) => {
+  const { rows: event } = await pool.query(
+    "SELECT event_id, event_date, event_name FROM event WHERE event_id = $1",
+    [eventId]
+  );
+  return event[0];
+};
+
 const enableCustomGuestsDb = async ({ eventId, customShareId }) => {
   const { rows: event } = await pool.query(
     "UPDATE event SET custom_share_id = $1 WHERE event_id = $2 returning custom_share_id",
@@ -65,4 +73,5 @@ module.exports = {
   getSingleEventDb,
   getCurrentUserEventsDb,
   enableCustomGuestsDb,
+  getBasicEventInfoDb,
 };
