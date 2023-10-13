@@ -60,23 +60,23 @@ const registerService = async (user) => {
 const loginService = async (email, password) => {
   try {
     if (!validateUser(email, password)) {
-      throw new ErrorHandler(403, "Invalid login");
+      throw new ErrorHandler(401, "Invalid login");
     }
 
     const user = await getUserByEmailDb(email);
     if (!user) {
-      throw new ErrorHandler(403, "Email or password incorrect.");
+      throw new ErrorHandler(401, "Email or password incorrect.");
     }
 
     if (user.google_id && !user.password) {
-      throw new ErrorHandler(403, "Login in with Google");
+      throw new ErrorHandler(401, "Login in with Google");
     }
 
     const { password: dbPassword, user_id, roles, fullname, username } = user;
     const isCorrectPassword = await bcrypt.compare(password, dbPassword);
 
     if (!isCorrectPassword) {
-      throw new ErrorHandler(403, "Email or password incorrect.");
+      throw new ErrorHandler(401, "Email or password incorrect.");
     }
 
     const accessToken = await signAccessToken({ id: user_id, roles });
