@@ -1,6 +1,8 @@
 const { checkPermissions } = require("../utils");
 const { StatusCodes } = require("http-status-codes");
 const { getSingleEventService } = require("../services/eventService");
+const { ErrorHandler } = require("../helpers/error");
+
 const {
   addGuestService,
   addCustomGuestService,
@@ -102,14 +104,10 @@ const getEventGuestList = async (req, res) => {
 
   const { guestList, eventInfo } = await getEventGuestListService(eventId);
 
-  if (!guestList.length) {
-    throw new ErrorHandler(
-      StatusCodes.OK,
-      `No guests with event id : ${eventId}`
-    );
+  if (!eventInfo) {
+    throw new ErrorHandler(StatusCodes.OK, "Event is not fount");
   }
-  const userId = parseInt(guestList[0].user_id);
-  checkPermissions(req.user, userId);
+  checkPermissions(req.user, eventInfo.user_id);
 
   res.status(StatusCodes.OK).json({ status: true, guestList, eventInfo });
 };

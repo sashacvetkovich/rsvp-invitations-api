@@ -53,7 +53,7 @@ const getCurrentUserEventsDb = async (userId) => {
 
 const getBasicEventInfoDb = async (eventId) => {
   const { rows: event } = await pool.query(
-    "SELECT event_id, event_date, event_name FROM event WHERE event_id = $1",
+    "SELECT event_id, event_date, event_name, user_id FROM event WHERE event_id = $1",
     [eventId]
   );
   return event[0];

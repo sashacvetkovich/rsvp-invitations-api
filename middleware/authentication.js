@@ -14,7 +14,7 @@ const authenticateUser = async (req, res, next) => {
     req.user = { userId: id, roles };
     next();
   } catch (error) {
-    throw new ErrorHandler(StatusCodes.OK, "Authentication Invalid");
+    throw new ErrorHandler(StatusCodes.NOT_FOUND, "Authentication Invalid");
   }
 };
 

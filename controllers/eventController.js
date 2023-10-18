@@ -7,12 +7,12 @@ const {
   createEventService,
   getSingleEventService,
   getCurrentUserEventsService,
-  enableCustomGuestsService
+  enableCustomGuestsService,
 } = require("../services/eventService.js");
 
 const createEvent = async (req, res) => {
   createEventValidator(req.body);
-  
+
   const { customData, eventInfo } = req.body;
 
   const customDataArray = customData.map((item) => {
@@ -64,15 +64,18 @@ const enableCustomGuests = async (req, res) => {
   }
 
   checkPermissions(req.user, event.user_id);
-
-  const eventDb = await enableCustomGuestsService(eventId)
-
-  res.status(StatusCodes.OK).json({ success: true, id: eventDb.custom_share_id });
+  if (!event.custom_share_id) {
+    const eventDb = await enableCustomGuestsService(eventId);
+    return res
+      .status(StatusCodes.OK)
+      .json({ success: true, id: eventDb.custom_share_id });
+  }
+  res.status(StatusCodes.OK).json({ success: true, id: event.custom_share_id });
 };
 
 module.exports = {
   createEvent,
   getSingleEvent,
   getCurrentUserEvents,
-  enableCustomGuests
+  enableCustomGuests,
 };

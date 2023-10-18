@@ -61,7 +61,7 @@ const registerService = async (user) => {
 const loginService = async (email, password) => {
   try {
     if (!validateUser(email, password)) {
-      throw new ErrorHandler(StatusCodes.OK, "Invalid login");
+      throw new ErrorHandler(StatusCodes.OK, "Email or password incorrect.");
     }
 
     const user = await getUserByEmailDb(email);
