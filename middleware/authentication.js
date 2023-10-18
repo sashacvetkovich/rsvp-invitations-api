@@ -1,11 +1,12 @@
-const CustomError = require("../errors");
+const { StatusCodes } = require("http-status-codes");
+const { ErrorHandler } = require("../helpers/error");
 const { isAccessTokenValid } = require("../utils");
 
 const authenticateUser = async (req, res, next) => {
-  const token = req.cookies?.accessToken
+  const token = req.cookies?.accessToken;
 
   if (!token) {
-    throw new CustomError.UnauthenticatedError("Authentication Invalid");
+    throw new ErrorHandler(StatusCodes.OK, "Authentication Invalid");
   }
 
   try {
@@ -13,15 +14,13 @@ const authenticateUser = async (req, res, next) => {
     req.user = { userId: id, roles };
     next();
   } catch (error) {
-    throw new CustomError.UnauthenticatedError("Authentication Invalid");
+    throw new ErrorHandler(StatusCodes.OK, "Authentication Invalid");
   }
 };
 
 const verifyAdmin = (req, res, next) => {
   if (!req.user.roles.includes("admin")) {
-    throw new CustomError.UnauthorizedError(
-      "Unauthorized to access this route"
-    );
+    throw new ErrorHandler(StatusCodes.OK, "Unauthorized to access this route");
   }
   next();
 };

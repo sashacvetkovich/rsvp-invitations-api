@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { ErrorHandler } = require("../helpers/error");
+const { StatusCodes } = require("http-status-codes");
 const validateUser = require("../helpers/validateUser");
 const {
   signAccessToken,
@@ -24,7 +25,7 @@ const registerService = async (user) => {
   try {
     const { password, email, fullname } = user;
     if (!email || !password || !fullname) {
-      throw new ErrorHandler(401, "all fields required");
+      throw new ErrorHandler(StatusCodes.OK, "all fields required");
     }
 
     if (validateUser(email, password)) {
@@ -34,7 +35,7 @@ const registerService = async (user) => {
       const userByEmail = await getUserByEmailDb(email);
 
       if (userByEmail) {
-        throw new ErrorHandler(401, "email taken already");
+        throw new ErrorHandler(StatusCodes.OK, "email taken already");
       }
 
       const newUser = await createUserDb({
@@ -50,7 +51,7 @@ const registerService = async (user) => {
         },
       };
     } else {
-      throw new ErrorHandler(401, "Input validation error");
+      throw new ErrorHandler(StatusCodes.OK, "Input validation error");
     }
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
@@ -60,23 +61,23 @@ const registerService = async (user) => {
 const loginService = async (email, password) => {
   try {
     if (!validateUser(email, password)) {
-      throw new ErrorHandler(401, "Invalid login");
+      throw new ErrorHandler(StatusCodes.OK, "Invalid login");
     }
 
     const user = await getUserByEmailDb(email);
     if (!user) {
-      throw new ErrorHandler(401, "Email or password incorrect.");
+      throw new ErrorHandler(StatusCodes.OK, "Email or password incorrect.");
     }
 
     if (user.google_id && !user.password) {
-      throw new ErrorHandler(401, "Login in with Google");
+      throw new ErrorHandler(StatusCodes.OK, "Login in with Google");
     }
 
     const { password: dbPassword, user_id, roles, fullname, username } = user;
     const isCorrectPassword = await bcrypt.compare(password, dbPassword);
 
     if (!isCorrectPassword) {
-      throw new ErrorHandler(401, "Email or password incorrect.");
+      throw new ErrorHandler(StatusCodes.OK, "Email or password incorrect.");
     }
 
     const accessToken = await signAccessToken({ id: user_id, roles });
@@ -128,7 +129,7 @@ const googleAuthService = async (code) => {
     const { id_token, access_token } = await getGoogleOAuthTokens({ code });
     const googleUser = await getGoogleUser({ id_token, access_token });
     if (!googleUser.verified_email) {
-      throw new ErrorHandler(403, "Google account is not verified.");
+      throw new ErrorHandler(StatusCodes.OK, "Google account is not verified.");
     }
     const { email, given_name, family_name, id, picture } = googleUser;
 

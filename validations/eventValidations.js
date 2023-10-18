@@ -1,11 +1,16 @@
-const CustomError = require("../errors");
+const { StatusCodes } = require("http-status-codes");
 const { isString, isObject, isBoolean } = require("../helpers/common");
+const { ErrorHandler } = require("../helpers/error");
 
 const createEventValidator = (data) => {
   const { customData, eventInfo } = data;
 
-  if (!Array.isArray(customData) || !isObject(eventInfo) || !customData.length > 1) {
-    throw new CustomError.BadRequestError("Please provide valid event data1");
+  if (
+    !Array.isArray(customData) ||
+    !isObject(eventInfo) ||
+    !customData.length > 1
+  ) {
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid event data1");
   }
 
   if (
@@ -16,7 +21,7 @@ const createEventValidator = (data) => {
     !isString(eventInfo.venueName) ||
     !Number.isInteger(eventInfo.templateId)
   ) {
-    throw new CustomError.BadRequestError("Please provide valid event data2");
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid event data2");
   }
 
   customData.forEach((element) => {
@@ -26,7 +31,10 @@ const createEventValidator = (data) => {
       !isString(element.itemValue) ||
       !isString(element.itemType)
     ) {
-      throw new CustomError.BadRequestError("Please provide valid event data3");
+      throw new ErrorHandler(
+        StatusCodes.OK,
+        "Please provide valid event data3"
+      );
     }
   });
 };

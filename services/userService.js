@@ -1,11 +1,12 @@
-const { ErrorHandler } = require("../helpers/error");
 const { getUserDb } = require("../db/userDb");
+const { ErrorHandler } = require("../helpers/error");
+const { StatusCodes } = require("http-status-codes");
 
 const getUserService = async (id) => {
   try {
     const user = await getUserDb(id);
     if (!user) {
-      throw new ErrorHandler(404, "User not found");
+      throw new ErrorHandler(StatusCodes.OK, "User not found");
     }
     return user;
   } catch (error) {

@@ -1,6 +1,5 @@
 const { checkPermissions } = require("../utils");
 const { StatusCodes } = require("http-status-codes");
-const CustomError = require("../errors");
 const { getSingleEventService } = require("../services/eventService");
 const {
   addGuestService,
@@ -20,13 +19,13 @@ const addGuest = async (req, res) => {
   const { guestName, guestEmail, invitedGuestNumber } = req.body;
 
   if (!guestName || !eventId || !guestEmail || !invitedGuestNumber) {
-    throw new CustomError.NotFoundError(`Please provide guest info`);
+    throw new ErrorHandler(StatusCodes.OK, `Please provide guest info`);
   }
 
   const event = await getSingleEventService(eventId);
 
   if (!event) {
-    throw new CustomError.NotFoundError(`No event with id : ${eventId}`);
+    throw new ErrorHandler(StatusCodes.OK, `No event with id : ${eventId}`);
   }
 
   checkPermissions(req.user, event.user_id);
@@ -51,14 +50,15 @@ const addCustomGuest = async (req, res) => {
   const { eventId, customShareId } = req.body;
 
   if (!eventId) {
-    throw new CustomError.BadRequestError("Please provide valid guest info");
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest info");
   }
   addCustomGuestValidator(req.body);
 
   const event = await getSingleEventService(eventId);
 
   if (!event || event.custom_share_id !== customShareId) {
-    throw new CustomError.BadRequestError(
+    throw new ErrorHandler(
+      StatusCodes.OK,
       "Custom guests option is not enabled"
     );
   }
@@ -81,13 +81,13 @@ const updateGuestName = async (req, res) => {
   const { guestName } = req.body;
 
   if (!guestName) {
-    throw new CustomError.NotFoundError(`Please provide guest name`);
+    throw new ErrorHandler(StatusCodes.OK, `Please provide guest name`);
   }
 
   const guest = await Guest.findOne({ _id: guestId });
 
   if (!guest) {
-    throw new CustomError.NotFoundError(`No guest with id : ${guestId}`);
+    throw new ErrorHandler(StatusCodes.OK, `No guest with id : ${guestId}`);
   }
 
   checkPermissions(req.user, guest.user._id);
@@ -103,7 +103,10 @@ const getEventGuestList = async (req, res) => {
   const { guestList, eventInfo } = await getEventGuestListService(eventId);
 
   if (!guestList.length) {
-    throw new CustomError.NotFoundError(`No guests with event id : ${eventId}`);
+    throw new ErrorHandler(
+      StatusCodes.OK,
+      `No guests with event id : ${eventId}`
+    );
   }
   const userId = parseInt(guestList[0].user_id);
   checkPermissions(req.user, userId);
@@ -117,7 +120,7 @@ const getSingleGuest = async (req, res) => {
   const guest = await getSingleGuestService(guestId);
 
   if (!guest) {
-    throw new CustomError.NotFoundError(`No guest with id : ${guestId}`);
+    throw new ErrorHandler(StatusCodes.OK, `No guest with id : ${guestId}`);
   }
 
   res.status(StatusCodes.OK).json({ guest });
@@ -127,7 +130,7 @@ const updateGuestAnswer = async (req, res) => {
   const { answerData, guestId } = req.body;
 
   if (!guestId) {
-    throw new CustomError.NotFoundError("Please provide valid guest Id");
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest Id");
   }
 
   updateGuestAnswerValidator(answerData);
@@ -135,7 +138,7 @@ const updateGuestAnswer = async (req, res) => {
   const guest = await getSingleGuestService(guestId);
 
   if (!guest) {
-    throw new CustomError.NotFoundError(`No guest with id : ${guestId}`);
+    throw new ErrorHandler(StatusCodes.OK, `No guest with id : ${guestId}`);
   }
 
   const guestIdDb = await updateGuestAnswerService({ ...answerData, guestId });

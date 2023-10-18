@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
-const CustomError = require("../errors");
 const { checkPermissions } = require("../utils");
 const { createEventValidator } = require("../validations/eventValidations");
+const { ErrorHandler } = require("../helpers/error");
 
 const {
   createEventService,
@@ -36,7 +36,7 @@ const getSingleEvent = async (req, res) => {
   const event = await getSingleEventService(eventId);
 
   if (!event) {
-    throw new CustomError.NotFoundError(`No event with id : ${eventId}`);
+    throw new ErrorHandler(StatusCodes.OK, `No event with id : ${eventId}`);
   }
 
   checkPermissions(req.user, event.user_id);
@@ -55,12 +55,12 @@ const enableCustomGuests = async (req, res) => {
   const { eventId } = req.body;
 
   if (!eventId) {
-    throw new CustomError.BadRequestError("Please provide valid evend Id");
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid evend Id");
   }
   const event = await getSingleEventService(eventId);
 
   if (!event) {
-    throw new CustomError.NotFoundError(`No event with id : ${eventId}`);
+    throw new ErrorHandler(StatusCodes.OK`, No event with id : ${eventId}`);
   }
 
   checkPermissions(req.user, event.user_id);

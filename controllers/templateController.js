@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const CustomError = require("../errors");
+const { ErrorHandler } = require("../helpers/error");
 const {
   createTemplateService,
   getSingleTemplateService,
@@ -36,7 +36,8 @@ const getSingleTemplate = async (req, res) => {
   const template = await getSingleTemplateService(templateId, recommendation);
 
   if (!template) {
-    throw new CustomError.NotFoundError(
+    throw new ErrorHandler(
+      StatusCodes.OK,
       `No invitation with id : ${templateId}`
     );
   }
@@ -58,7 +59,7 @@ const getAllTemplateCategories = async (req, res) => {
   const templateCategories = await getAllTemplateCategoriesService();
 
   if (!templateCategories) {
-    throw new CustomError.NotFoundError("Not found template categories");
+    throw new ErrorHandler(StatusCodes.OK, "Not found template categories");
   }
 
   res.status(StatusCodes.OK).json({ status: true, templateCategories });
@@ -72,7 +73,8 @@ const createTemplateCategory = async (req, res) => {
   );
 
   if (isCategoryExists) {
-    throw new CustomError.NotFoundError(
+    throw new ErrorHandler(
+      StatusCodes.OK,
       `Template ${req.body.categoryName} already exists`
     );
   }
@@ -90,7 +92,8 @@ const getSingleTemplateCategory = async (req, res) => {
   );
 
   if (!templateCategories) {
-    throw new CustomError.NotFoundError(
+    throw new ErrorHandler(
+      StatusCodes.OK,
       `Not found template category ${categoryName}`
     );
   }

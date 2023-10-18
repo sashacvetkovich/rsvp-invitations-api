@@ -1,4 +1,5 @@
-const CustomError = require("../errors");
+const { StatusCodes } = require("http-status-codes");
+const { ErrorHandler } = require("../helpers/error");
 
 const createTemplateCategoryValidator = (data) => {
   const {
@@ -16,7 +17,8 @@ const createTemplateCategoryValidator = (data) => {
     !categoryLongDescription ||
     !categoryImage
   ) {
-    throw new CustomError.BadRequestError(
+    throw new ErrorHandler(
+      StatusCodes.OK,
       `Please provide template category data`
     );
   }
@@ -41,7 +43,7 @@ const createTemplateValidator = (data) => {
     // TO DO - improve templateElementsData validation
     !templateElementsData.length
   ) {
-    throw new CustomError.BadRequestError(`Please provide template data`);
+    throw new ErrorHandler(StatusCodes.OK, `Please provide template data`);
   }
 };
 
