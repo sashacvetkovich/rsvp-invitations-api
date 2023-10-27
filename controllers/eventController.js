@@ -28,7 +28,7 @@ const createEvent = async (req, res) => {
   const eventData = { ...eventInfo, userId: req.user.userId };
   const event = await createEventService({ eventData, customDataArray });
 
-  res.status(StatusCodes.CREATED).json({ success: true, event: event });
+  res.status(StatusCodes.CREATED).json({ status: true, event: event });
 };
 
 const getSingleEvent = async (req, res) => {
@@ -40,7 +40,7 @@ const getSingleEvent = async (req, res) => {
   }
 
   checkPermissions(req.user, event.user_id);
-  res.status(StatusCodes.OK).json({ success: true, event });
+  res.status(StatusCodes.OK).json({ status: true, event });
 };
 
 const getCurrentUserEvents = async (req, res) => {
@@ -68,9 +68,9 @@ const enableCustomGuests = async (req, res) => {
     const eventDb = await enableCustomGuestsService(eventId);
     return res
       .status(StatusCodes.OK)
-      .json({ success: true, id: eventDb.custom_share_id });
+      .json({ status: true, id: eventDb.custom_share_id });
   }
-  res.status(StatusCodes.OK).json({ success: true, id: event.custom_share_id });
+  res.status(StatusCodes.OK).json({ status: true, id: event.custom_share_id });
 };
 
 module.exports = {

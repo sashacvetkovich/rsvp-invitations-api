@@ -9,6 +9,7 @@ const {
   getEventGuestListService,
   getSingleGuestService,
   updateGuestAnswerService,
+  updateGuestDataService,
 } = require("../services/guestService");
 
 const {
@@ -45,7 +46,7 @@ const addGuest = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ success: true, msg: `Added guest with id ${guest.guest_id}` });
+    .json({ status: true, msg: `Added guest with id ${guest.guest_id}` });
 };
 
 const addCustomGuest = async (req, res) => {
@@ -75,28 +76,34 @@ const addCustomGuest = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ success: true, msg: `Added guest with id ${guest.guest_id}` });
+    .json({ status: true, msg: `Added guest with id ${guest.guest_id}` });
 };
 
-const updateGuestName = async (req, res) => {
+const updateGuestData = async (req, res) => {
   const { id: guestId } = req.params;
-  const { guestName } = req.body;
+  const { guestName, guestNumber } = req.body;
 
-  if (!guestName) {
-    throw new ErrorHandler(StatusCodes.OK, `Please provide guest name`);
+  if (!guestName || !guestNumber) {
+    throw new ErrorHandler(StatusCodes.OK, `Please provide guest info`);
   }
 
-  const guest = await Guest.findOne({ _id: guestId });
+  const guest = await getSingleGuestService(guestId);
 
   if (!guest) {
     throw new ErrorHandler(StatusCodes.OK, `No guest with id : ${guestId}`);
   }
 
-  checkPermissions(req.user, guest.user._id);
+  checkPermissions(req.user, Number(guest.user_id));
 
-  guest.guestName = guestName;
-  await guest.save();
-  res.status(StatusCodes.OK).json({ updatedGuest: guest });
+  const updatedGuest = await updateGuestDataService({
+    guestName,
+    guestNumber,
+    guestId,
+  });
+
+  res
+    .status(StatusCodes.OK)
+    .json({ status: true, guestId: updatedGuest.user_id });
 };
 
 const getEventGuestList = async (req, res) => {
@@ -150,7 +157,7 @@ const updateGuestAnswer = async (req, res) => {
 module.exports = {
   addGuest,
   addCustomGuest,
-  updateGuestName,
+  updateGuestData,
   getEventGuestList,
   getSingleGuest,
   updateGuestAnswer,

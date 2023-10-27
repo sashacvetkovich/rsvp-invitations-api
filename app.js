@@ -21,10 +21,12 @@ cloudinary.config({
 // middleware
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
+const { parseStrings } = require("./middleware/parseStrings");
 
 //routes
 const routes = require("./routes");
 
+app.use(parseStrings);
 app.use(cors(corsOptions));
 app.use(fileUpload({ useTempFiles: true }));
 

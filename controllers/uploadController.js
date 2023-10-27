@@ -14,7 +14,7 @@ const uploadImageController = async (req, res) => {
   fs.unlinkSync(req.files.image.tempFilePath);
   return res
     .status(StatusCodes.OK)
-    .json({ success: true, imageUrl: result.secure_url });
+    .json({ status: true, imageUrl: result.secure_url });
 };
 
 module.exports = {

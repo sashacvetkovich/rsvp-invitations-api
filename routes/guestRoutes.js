@@ -6,7 +6,7 @@ const { authenticateUser } = require("../middleware/authentication");
 const {
   addGuest,
   addCustomGuest,
-  updateGuestName,
+  updateGuestData,
   getEventGuestList,
   getSingleGuest,
   updateGuestAnswer,
@@ -19,7 +19,7 @@ router.route("/customguest").post(addCustomGuest);
 
 router
   .route("/:id")
-  .patch(authenticateUser, updateGuestName)
+  .patch(authenticateUser, updateGuestData)
   .get(getSingleGuest);
 
 module.exports = router;
