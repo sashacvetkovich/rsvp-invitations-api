@@ -22,6 +22,6 @@ router
   .route("/:id")
   .patch(authenticateUser, updateGuestData)
   .get(getSingleGuest)
-  .delete(deleteGuest)
+  .delete(authenticateUser, deleteGuest)
 
 module.exports = router;

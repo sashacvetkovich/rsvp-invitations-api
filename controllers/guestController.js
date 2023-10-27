@@ -161,6 +161,13 @@ const deleteGuest = async (req, res) => {
   if (!guestId) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest Id");
   }
+
+  const guest = await getSingleGuestService(guestId);
+  if (!guest) {
+    throw new ErrorHandler(StatusCodes.OK, `No guest with id : ${guestId}`);
+  }
+  checkPermissions(req.user, Number(guest.user_id));
+
   await deleteGuestService(guestId);
 
   res.status(StatusCodes.OK).json({
