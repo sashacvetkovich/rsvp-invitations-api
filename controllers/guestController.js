@@ -19,8 +19,7 @@ const {
 } = require("../validations/guestValidations");
 
 const addGuest = async (req, res) => {
-  const { eventId } = req.params;
-  const { guestName, guestEmail, invitedGuestNumber } = req.body;
+  const { guestName, guestEmail, invitedGuestNumber, eventId } = req.body;
 
   if (!guestName || !eventId || !guestEmail || !invitedGuestNumber) {
     throw new ErrorHandler(StatusCodes.OK, `Please provide guest info`);

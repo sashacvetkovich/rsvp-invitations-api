@@ -14,7 +14,7 @@ const {
 } = require("../controllers/guestController");
 
 router.route("/updateAnswer").post(updateGuestAnswer);
-router.route("/add/:eventId").post(authenticateUser, addGuest);
+router.route("/add/").post(authenticateUser, addGuest);
 router.route("/event/:eventId").get(authenticateUser, getEventGuestList);
 router.route("/customguest").post(addCustomGuest);
 
