@@ -10,6 +10,7 @@ const {
   getSingleGuestService,
   updateGuestAnswerService,
   updateGuestDataService,
+  deleteGuestService,
 } = require("../services/guestService");
 
 const {
@@ -154,6 +155,20 @@ const updateGuestAnswer = async (req, res) => {
   });
 };
 
+const deleteGuest = async (req, res) => {
+  const { id: guestId } = req.params;
+
+  if (!guestId) {
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest Id");
+  }
+  await deleteGuestService(guestId);
+
+  res.status(StatusCodes.OK).json({
+    status: true,
+    message: `Guest is successfully deleted`,
+  });
+};
+
 module.exports = {
   addGuest,
   addCustomGuest,
@@ -161,4 +176,5 @@ module.exports = {
   getEventGuestList,
   getSingleGuest,
   updateGuestAnswer,
+  deleteGuest,
 };

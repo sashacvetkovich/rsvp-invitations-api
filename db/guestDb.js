@@ -96,6 +96,15 @@ const updateGuestDataDb = async ({ guestName, guestNumber, guestId }) => {
   return guest[0];
 };
 
+const deleteGuestDb = async (guestId) => {
+  const { rows: guest } = await pool.query(
+    `DELETE FROM guest WHERE guest_id = $1 returning *`,
+    [guestId]
+  );
+
+  return guest[0];
+};
+
 module.exports = {
   addGuestDb,
   getEventGuestListDb,
@@ -103,4 +112,5 @@ module.exports = {
   getSingleGuestDb,
   updateGuestDataDb,
   addCustomGuestDb,
+  deleteGuestDb
 };

@@ -5,6 +5,7 @@ const {
   getSingleGuestDb,
   updateGuestAnswerDb,
   updateGuestDataDb,
+  deleteGuestDb
 } = require("../db/guestDb");
 
 const { getBasicEventInfoDb } = require("../db/eventDb");
@@ -73,6 +74,17 @@ const updateGuestAnswerService = async (answerData) => {
   }
 };
 
+const deleteGuestService = async (guestId) => {
+  try {
+    const guest = await deleteGuestDb(guestId);
+
+    return guest;
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+
 module.exports = {
   addGuestService,
   addCustomGuestService,
@@ -80,4 +92,5 @@ module.exports = {
   getSingleGuestService,
   updateGuestAnswerService,
   updateGuestDataService,
+  deleteGuestService
 };
