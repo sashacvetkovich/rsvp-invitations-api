@@ -46,7 +46,7 @@ const addGuest = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ status: true, msg: `Added guest with id ${guest.guest_id}` });
+    .json({ status: true, message: `Added guest with id ${guest.guest_id}` });
 };
 
 const addCustomGuest = async (req, res) => {
@@ -76,7 +76,7 @@ const addCustomGuest = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ status: true, msg: `Added guest with id ${guest.guest_id}` });
+    .json({ status: true, message: `Added guest with id ${guest.guest_id}` });
 };
 
 const updateGuestData = async (req, res) => {
