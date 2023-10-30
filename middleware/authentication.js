@@ -6,7 +6,7 @@ const authenticateUser = async (req, res, next) => {
   const token = req.cookies?.accessToken;
 
   if (!token) {
-    throw new ErrorHandler(StatusCodes.OK, "Authentication Invalid");
+    throw new ErrorHandler(StatusCodes.UNAUTHORIZED, "Authentication Invalid");
   }
 
   try {
@@ -14,13 +14,13 @@ const authenticateUser = async (req, res, next) => {
     req.user = { userId: id, roles };
     next();
   } catch (error) {
-    throw new ErrorHandler(StatusCodes.NOT_FOUND, "Authentication Invalid");
+    throw new ErrorHandler(StatusCodes.UNAUTHORIZED, "Authentication Invalid");
   }
 };
 
 const verifyAdmin = (req, res, next) => {
   if (!req.user.roles.includes("admin")) {
-    throw new ErrorHandler(StatusCodes.OK, "Unauthorized to access this route");
+    throw new ErrorHandler(StatusCodes.UNAUTHORIZED, "Unauthorized to access this route");
   }
   next();
 };
