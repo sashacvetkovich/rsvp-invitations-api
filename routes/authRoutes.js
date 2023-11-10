@@ -9,6 +9,7 @@ const {
   logoutController,
   forgotPassword,
   resetPassword,
+  verifyEmail
 } = require("../controllers/authController");
 
 router.post("/register", registerController);
@@ -18,5 +19,6 @@ router.get("/google", googleAuthController);
 router.get("/logout", logoutController);
 router.post('/reset-password', resetPassword);
 router.post('/forgot-password', forgotPassword);
+router.post('/verify-email', verifyEmail);
 
 module.exports = router;

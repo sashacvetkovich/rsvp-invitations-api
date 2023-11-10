@@ -6,21 +6,19 @@ const {
   logoutService,
   forgotPasswordService,
   resetPasswordService,
+  verifyEmailService,
 } = require("../services/authService");
 const { attachCookiesToResponse } = require("../utils/jwt");
 const { ErrorHandler } = require("../helpers/error");
 const { StatusCodes } = require("http-status-codes");
 
 const registerController = async (req, res) => {
-  const { user } = await registerService(req.body);
-
-  // if (process.env.NODE_ENV !== "test") {
-  //   await mail.signupMail(user.email, user.fullname.split(" ")[0]);
-  // }
+  await registerService(req.body);
 
   res.status(201).json({
     status: true,
-    user,
+    message:
+      "Your account has been created successfully. Please confirm your email to get started.",
   });
 };
 
@@ -135,6 +133,20 @@ const resetPassword = async (req, res) => {
   });
 };
 
+const verifyEmail = async (req, res) => {
+  const { token, email } = req.body;
+  if (!token || !email) {
+    throw new ErrorHandler(StatusCodes.OK, "Please provide all values");
+  }
+
+  await verifyEmailService({ token, email });
+
+  res.status(StatusCodes.OK).json({
+    status: true,
+    message: "Email is successfully verified",
+  });
+};
+
 module.exports = {
   registerController,
   loginController,
@@ -143,4 +155,5 @@ module.exports = {
   logoutController,
   forgotPassword,
   resetPassword,
+  verifyEmail,
 };

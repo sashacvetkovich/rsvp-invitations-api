@@ -8,6 +8,7 @@ const {
   signRefreshToken,
   isRefreshTokenValid,
   sendResetPasswordEmail,
+  sendVerificationEmail,
 } = require("../utils");
 const {
   getUserByEmailDb,
@@ -19,6 +20,7 @@ const {
   deleteRefreshTokenDb,
   forgotPasswordDb,
   resetPasswordDb,
+  verifyEmailDb,
 } = require("../db/authDb");
 const {
   getGoogleOAuthTokens,
@@ -41,19 +43,19 @@ const registerService = async (user) => {
       if (userByEmail) {
         throw new ErrorHandler(StatusCodes.OK, "email taken already");
       }
+      const verificationToken = crypto.randomBytes(40).toString("hex");
 
       const newUser = await createUserDb({
         ...user,
         password: hashedPassword,
+        verificationToken,
       });
 
-      return {
-        user: {
-          user_id: newUser.user_id,
-          fullname: newUser.fullname,
-          email: newUser.email,
-        },
-      };
+      sendVerificationEmail({
+        name: newUser.fullname,
+        token: newUser.verification_token,
+        userEmail: newUser.email,
+      });
     } else {
       throw new ErrorHandler(StatusCodes.OK, "Input validation error");
     }
@@ -77,11 +79,18 @@ const loginService = async (email, password) => {
       throw new ErrorHandler(StatusCodes.OK, "Login in with Google");
     }
 
-    const { password: dbPassword, user_id, roles, fullname, username } = user;
+    const { password: dbPassword, user_id, roles } = user;
     const isCorrectPassword = await bcrypt.compare(password, dbPassword);
 
     if (!isCorrectPassword) {
       throw new ErrorHandler(StatusCodes.OK, "Email or password incorrect.");
+    }
+
+    if (!user.is_verified) {
+      throw new ErrorHandler(
+        StatusCodes.OK,
+        "Please confirm your email to get started."
+      );
     }
 
     const accessToken = await signAccessToken({ id: user_id, roles });
@@ -272,6 +281,20 @@ const resetPasswordService = async ({ token, email, password }) => {
   }
 };
 
+const verifyEmailService = async ({ token, email }) => {
+  try {
+    const user = await getUserByEmailDb(email);
+
+    if (!user || user?.verification_token !== token) {
+      throw new ErrorHandler(StatusCodes.OK, "Verification failed");
+    }
+
+    await verifyEmailDb({ email, token });
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
 module.exports = {
   registerService,
   loginService,
@@ -280,4 +303,5 @@ module.exports = {
   logoutService,
   forgotPasswordService,
   resetPasswordService,
+  verifyEmailService,
 };

@@ -5,7 +5,7 @@ const {
   isRefreshTokenValid,
 } = require("./jwt");
 const checkPermissions = require("./checkPermissions");
-const { sendResetPasswordEmail } = require("./emails");
+const { sendResetPasswordEmail, sendVerificationEmail } = require("./emails");
 
 module.exports = {
   isAccessTokenValid,
@@ -14,4 +14,5 @@ module.exports = {
   signRefreshToken,
   isRefreshTokenValid,
   sendResetPasswordEmail,
+  sendVerificationEmail,
 };

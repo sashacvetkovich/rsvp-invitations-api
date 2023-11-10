@@ -16,12 +16,17 @@ const getUserByEmailDb = async (email) => {
   return user[0];
 };
 
-const createUserDb = async ({ password, email, fullname }) => {
+const createUserDb = async ({
+  password,
+  email,
+  fullname,
+  verificationToken,
+}) => {
   const { rows: user } = await pool.query(
-    `INSERT INTO users(password, email, fullname) 
-      VALUES($1, $2, $3) 
-      returning user_id, email, fullname, roles, created_at`,
-    [password, email, fullname]
+    `INSERT INTO users(password, email, fullname, verification_token) 
+      VALUES($1, $2, $3, $4) 
+      returning user_id, email, fullname, roles, verification_token`,
+    [password, email, fullname, verificationToken]
   );
   return user[0];
 };
@@ -91,6 +96,14 @@ const resetPasswordDb = async ({ email, password }) => {
   return user[0];
 };
 
+const verifyEmailDb = async ({ email }) => {
+  const { rows: user } = await pool.query(
+    `UPDATE users SET is_verified = true WHERE email = $1 returning user_id`,
+    [email]
+  );
+  return user[0];
+};
+
 module.exports = {
   getUserByRefreshTokenDb,
   getUserByEmailDb,
@@ -101,4 +114,5 @@ module.exports = {
   deleteRefreshTokenDb,
   forgotPasswordDb,
   resetPasswordDb,
+  verifyEmailDb,
 };
