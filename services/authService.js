@@ -2,10 +2,12 @@ const bcrypt = require("bcrypt");
 const { ErrorHandler } = require("../helpers/error");
 const { StatusCodes } = require("http-status-codes");
 const validateUser = require("../helpers/validateUser");
+const crypto = require("crypto");
 const {
   signAccessToken,
   signRefreshToken,
   isRefreshTokenValid,
+  sendResetPasswordEmail,
 } = require("../utils");
 const {
   getUserByEmailDb,
@@ -15,6 +17,8 @@ const {
   updateRefreshTokenDb,
   getUserByRefreshTokenDb,
   deleteRefreshTokenDb,
+  forgotPasswordDb,
+  resetPasswordDb,
 } = require("../db/authDb");
 const {
   getGoogleOAuthTokens,
@@ -96,7 +100,7 @@ const loginService = async (email, password) => {
     return {
       accessToken,
       refreshToken,
-      user
+      user,
     };
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
@@ -210,10 +214,70 @@ const logoutService = async (refreshToken) => {
   }
 };
 
+const forgotPasswordService = async (email) => {
+  try {
+    const user = await getUserByEmailDb(email);
+
+    if (user) {
+      const passwordToken = crypto.randomBytes(70).toString("hex");
+
+      await sendResetPasswordEmail({
+        userEmail: user.email,
+        token: passwordToken,
+      });
+
+      const tenMinutes = 1000 * 60 * 10;
+      const passwordTokenExpirationDate = new Date(
+        Date.now() + tenMinutes
+      ).getTime();
+
+      await forgotPasswordDb({
+        passwordToken: passwordToken,
+        passwordTokenExpirationDate,
+        userId: user.user_id,
+      });
+    }
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const resetPasswordService = async ({ token, email, password }) => {
+  try {
+    const user = await getUserByEmailDb(email);
+
+    if (user) {
+      const currentDate = new Date().getTime();
+      if (
+        user.password_token === token &&
+        user.password_token_expiration > currentDate
+      ) {
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+        await resetPasswordDb({ email, password: hashedPassword });
+      }
+
+      if (
+        user.password_token === token &&
+        user.password_token_expiration < currentDate
+      ) {
+        throw new ErrorHandler(
+          StatusCodes.OK,
+          "The Link You Followed Has Expired"
+        );
+      }
+    }
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
 module.exports = {
   registerService,
   loginService,
   refreshTokenService,
   googleAuthService,
   logoutService,
+  forgotPasswordService,
+  resetPasswordService,
 };

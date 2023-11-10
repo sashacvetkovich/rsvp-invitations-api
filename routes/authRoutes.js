@@ -6,7 +6,9 @@ const {
   loginController,
   refreshTokenController,
   googleAuthController,
-  logoutController
+  logoutController,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/authController");
 
 router.post("/register", registerController);
@@ -14,5 +16,7 @@ router.post("/login", loginController);
 router.get("/refresh", refreshTokenController);
 router.get("/google", googleAuthController);
 router.get("/logout", logoutController);
+router.post('/reset-password', resetPassword);
+router.post('/forgot-password', forgotPassword);
 
 module.exports = router;

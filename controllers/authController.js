@@ -4,8 +4,11 @@ const {
   refreshTokenService,
   googleAuthService,
   logoutService,
+  forgotPasswordService,
+  resetPasswordService,
 } = require("../services/authService");
 const { attachCookiesToResponse } = require("../utils/jwt");
+const { ErrorHandler } = require("../helpers/error");
 const { StatusCodes } = require("http-status-codes");
 
 const registerController = async (req, res) => {
@@ -32,12 +35,12 @@ const loginController = async (req, res) => {
   res.status(StatusCodes.OK).json({
     status: true,
     user: {
-      email:user.email,
-      fullname:user.fullname,
+      email: user.email,
+      fullname: user.fullname,
       roles: user.roles,
       user_image: user.user_image,
-      is_verified: user.is_verified
-    }
+      is_verified: user.is_verified,
+    },
   });
 };
 
@@ -77,7 +80,7 @@ const googleAuthController = async (req, res) => {
 };
 
 const logoutController = async (req, res) => {
-  const  refreshToken = req.cookies?.refreshToken;
+  const refreshToken = req.cookies?.refreshToken;
 
   if (!refreshToken) {
     res.clearCookie("accessToken", {
@@ -104,10 +107,40 @@ const logoutController = async (req, res) => {
   res.status(StatusCodes.OK).json({ status: true });
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    throw new ErrorHandler(StatusCodes.OK, "Please provide email address");
+  }
+
+  await forgotPasswordService(email);
+
+  res.status(StatusCodes.OK).json({
+    status: true,
+    message: "Please check your email for reset password link",
+  });
+};
+
+const resetPassword = async (req, res) => {
+  const { token, email, password } = req.body;
+  if (!token || !email || !password) {
+    throw new ErrorHandler(StatusCodes.OK, "Please provide all values");
+  }
+
+  await resetPasswordService({ token, email, password });
+
+  res.status(StatusCodes.OK).json({
+    status: true,
+    message: "Password changed successfully",
+  });
+};
+
 module.exports = {
   registerController,
   loginController,
   refreshTokenController,
   googleAuthController,
   logoutController,
+  forgotPassword,
+  resetPassword,
 };

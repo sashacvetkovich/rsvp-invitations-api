@@ -71,6 +71,26 @@ const deleteRefreshTokenDb = async (refreshToken) => {
   return user[0];
 };
 
+const forgotPasswordDb = async ({
+  passwordTokenExpirationDate,
+  passwordToken,
+  userId,
+}) => {
+  const { rows: user } = await pool.query(
+    `UPDATE users SET password_token = $3, password_token_expiration = $2 WHERE user_id = $1 returning user_id`,
+    [userId, passwordTokenExpirationDate, passwordToken]
+  );
+  return user[0];
+};
+
+const resetPasswordDb = async ({ email, password }) => {
+  const { rows: user } = await pool.query(
+    `UPDATE users SET password = $2, password_token = '', password_token_expiration = ''  WHERE email = $1 returning user_id`,
+    [email, password]
+  );
+  return user[0];
+};
+
 module.exports = {
   getUserByRefreshTokenDb,
   getUserByEmailDb,
@@ -78,5 +98,7 @@ module.exports = {
   updateRefreshTokenDb,
   createGoogleUserDb,
   updateGoogleUserDb,
-  deleteRefreshTokenDb
+  deleteRefreshTokenDb,
+  forgotPasswordDb,
+  resetPasswordDb,
 };
