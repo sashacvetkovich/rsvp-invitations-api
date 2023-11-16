@@ -3,11 +3,11 @@ const {
   createEventCustomDataDb,
   getSingleEventDb,
   getCurrentUserEventsDb,
-  enableCustomGuestsDb
+  enableCustomGuestsDb,
+  checkEventPathDb,
 } = require("../db/eventDb");
 const { ErrorHandler } = require("../helpers/error");
 const { v4: uuid } = require("uuid");
-
 
 const createEventService = async ({ customDataArray, eventData }) => {
   try {
@@ -47,7 +47,17 @@ const getCurrentUserEventsService = async (userId) => {
 const enableCustomGuestsService = async (eventId) => {
   try {
     const customShareId = uuid();
-    const event = await enableCustomGuestsDb({eventId, customShareId});
+    const event = await enableCustomGuestsDb({ eventId, customShareId });
+
+    return event;
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const checkEventPathService = async (eventPath) => {
+  try {
+    const event = await checkEventPathDb(eventPath);
 
     return event;
   } catch (error) {
@@ -59,5 +69,6 @@ module.exports = {
   createEventService,
   getSingleEventService,
   getCurrentUserEventsService,
-  enableCustomGuestsService
+  enableCustomGuestsService,
+  checkEventPathService,
 };

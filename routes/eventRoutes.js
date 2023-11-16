@@ -10,10 +10,12 @@ const {
   createEvent,
   getSingleEvent,
   getCurrentUserEvents,
-  enableCustomGuests
+  enableCustomGuests,
+  checkEventPath,
 } = require("../controllers/eventController");
 
 router.route("/").post(authenticateUser, createEvent);
+router.route("/checkpath").post(authenticateUser, checkEventPath);
 router.route("/enablecustomguests").post(authenticateUser, enableCustomGuests);
 router.route("/myevents").get(authenticateUser, getCurrentUserEvents);
 router.route("/:id").get(authenticateUser, getSingleEvent);

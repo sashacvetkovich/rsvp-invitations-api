@@ -8,6 +8,7 @@ const {
   getSingleEventService,
   getCurrentUserEventsService,
   enableCustomGuestsService,
+  checkEventPathService,
 } = require("../services/eventService.js");
 
 const createEvent = async (req, res) => {
@@ -25,7 +26,11 @@ const createEvent = async (req, res) => {
     ];
   });
 
-  const eventData = { ...eventInfo, userId: req.user.userId };
+  const eventData = {
+    ...eventInfo,
+    userId: req.user.userId,
+    eventPath: eventInfo.eventPath.toLowerCase(),
+  };
   const event = await createEventService({ eventData, customDataArray });
 
   res.status(StatusCodes.CREATED).json({ status: true, event: event });
@@ -73,9 +78,22 @@ const enableCustomGuests = async (req, res) => {
   res.status(StatusCodes.OK).json({ status: true, id: event.custom_share_id });
 };
 
+const checkEventPath = async (req, res) => {
+  const { path } = req.body;
+
+  if (!path) {
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid evend path");
+  }
+  const event = await checkEventPathService(path);
+  const available = event ? false : true;
+
+  res.status(StatusCodes.OK).json({ status: true, available });
+};
+
 module.exports = {
   createEvent,
   getSingleEvent,
   getCurrentUserEvents,
   enableCustomGuests,
+  checkEventPath,
 };

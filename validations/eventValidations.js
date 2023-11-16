@@ -10,7 +10,7 @@ const createEventValidator = (data) => {
     !isObject(eventInfo) ||
     !customData.length > 1
   ) {
-    throw new ErrorHandler(StatusCodes.OK, "Please provide valid event data1");
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid event data");
   }
 
   if (
@@ -18,10 +18,11 @@ const createEventValidator = (data) => {
     !isString(eventInfo.eventDescription) ||
     !isString(eventInfo.eventName) ||
     !isString(eventInfo.venueAddress) ||
+    !isString(eventInfo.eventPath) ||
     !isString(eventInfo.venueName) ||
     !Number.isInteger(eventInfo.templateId)
   ) {
-    throw new ErrorHandler(StatusCodes.OK, "Please provide valid event data2");
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid event data");
   }
 
   customData.forEach((element) => {
@@ -33,7 +34,7 @@ const createEventValidator = (data) => {
     ) {
       throw new ErrorHandler(
         StatusCodes.OK,
-        "Please provide valid event data3"
+        "Please provide valid event data"
       );
     }
   });

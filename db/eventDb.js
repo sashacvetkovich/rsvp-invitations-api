@@ -9,9 +9,10 @@ const createEventDb = async ({
   venueName,
   venueAddress,
   userId,
+  eventPath,
 }) => {
   const { rows: eventDetails } = await pool.query(
-    "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *; ",
+    "INSERT INTO event(template_id, event_date, event_name, event_description, venue_name, venue_address, user_id, event_path) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *; ",
     [
       templateId,
       eventDate,
@@ -20,6 +21,7 @@ const createEventDb = async ({
       venueName,
       venueAddress,
       userId,
+      eventPath,
     ]
   );
   return eventDetails[0];
@@ -67,6 +69,14 @@ const enableCustomGuestsDb = async ({ eventId, customShareId }) => {
   return event[0];
 };
 
+const checkEventPathDb = async (eventPath) => {
+  const { rows: event } = await pool.query(
+    "SELECT event_id FROM event WHERE event_path = $1",
+    [eventPath]
+  );
+  return event[0];
+};
+
 module.exports = {
   createEventDb,
   createEventCustomDataDb,
@@ -74,4 +84,5 @@ module.exports = {
   getCurrentUserEventsDb,
   enableCustomGuestsDb,
   getBasicEventInfoDb,
+  checkEventPathDb,
 };
