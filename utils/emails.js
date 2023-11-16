@@ -1,4 +1,6 @@
 const sgMail = require("@sendgrid/mail");
+const { logger } = require("../utils/logger");
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 class ResetPasswordEmail {
@@ -29,7 +31,7 @@ const sendMail = async (message) => {
   try {
     await sgMail.send(message);
   } catch (error) {
-    console.error(error.response?.body);
+    logger.error(`Email error: ${error.response?.body}`);
   }
 };
 

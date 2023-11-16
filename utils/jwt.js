@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { logger } = require("../utils/logger");
 
 const isAccessTokenValid = ({ token }) =>
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -9,7 +10,7 @@ const signAccessToken = async (data) => {
       expiresIn: "60m",
     });
   } catch (error) {
-    console.log(error);
+    logger.error(`Sign token error: ${error}`);
     throw new ErrorHandler(500, "An error occurred");
   }
 };
@@ -20,7 +21,7 @@ const signRefreshToken = async (data) => {
       expiresIn: "30d",
     });
   } catch (error) {
-    console.log(error);
+    logger.error(`Sign refresh token error: ${error}`);
     throw new ErrorHandler(500, error.message);
   }
 };

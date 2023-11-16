@@ -1,7 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
+const { logger } = require("../utils/logger");
+
 const errorHandlerMiddleware = (err, req, res, next) => {
-  if(err.statusCode !== 200){
-    console.log(err);
+  if (
+    err.statusCode !== StatusCodes.OK &&
+    err.statusCode !== StatusCodes.UNAUTHORIZED
+  ) {
+    logger.error(err);
   }
 
   let customError = {
