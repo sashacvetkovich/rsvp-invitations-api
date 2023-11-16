@@ -8,9 +8,16 @@ const {
 } = require("../db/eventDb");
 const { ErrorHandler } = require("../helpers/error");
 const { v4: uuid } = require("uuid");
+const { StatusCodes } = require("http-status-codes");
 
 const createEventService = async ({ customDataArray, eventData }) => {
   try {
+    const eventPath = await checkEventPathDb(eventData.eventPath);
+
+    if (eventPath) {
+      throw new ErrorHandler(StatusCodes.OK, "Event path is not availble");
+    }
+
     const event = await createEventDb(eventData);
     const customDataWihId = await customDataArray.map((item) => [
       ...item,
