@@ -33,7 +33,7 @@ const createEvent = async (req, res) => {
   };
   const event = await createEventService({ eventData, customDataArray });
 
-  res.status(StatusCodes.CREATED).json({ status: true, event: event });
+  res.status(StatusCodes.CREATED).json({ status: true, eventId: event.event_id });
 };
 
 const getSingleEvent = async (req, res) => {

@@ -23,9 +23,10 @@ const createEventService = async ({ customDataArray, eventData }) => {
       ...item,
       event.event_id,
     ]);
-    const eventCustomData = await createEventCustomDataDb(customDataWihId);
 
-    return { event, eventCustomData };
+    await createEventCustomDataDb(customDataWihId);
+
+    return event;
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
