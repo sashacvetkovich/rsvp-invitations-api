@@ -15,7 +15,6 @@ const createEventValidator = (data) => {
 
   if (
     !isString(eventInfo.eventDate) ||
-    !isString(eventInfo.eventDescription) ||
     !isString(eventInfo.eventName) ||
     !isString(eventInfo.venueAddress) ||
     !isString(eventInfo.eventPath) ||
