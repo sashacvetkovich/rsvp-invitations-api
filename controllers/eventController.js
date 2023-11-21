@@ -10,6 +10,7 @@ const {
   enableCustomGuestsService,
   checkEventPathService,
 } = require("../services/eventService.js");
+const { isString } = require("../helpers/common.js");
 
 const createEvent = async (req, res) => {
   createEventValidator(req.body);
@@ -81,7 +82,7 @@ const enableCustomGuests = async (req, res) => {
 const checkEventPath = async (req, res) => {
   const { path } = req.body;
 
-  if (!path) {
+  if (!path || !isString(path)) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid evend path");
   }
   const event = await checkEventPathService(path);
