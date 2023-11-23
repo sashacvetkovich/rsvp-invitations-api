@@ -62,9 +62,9 @@ const getAllTemplatesService = async () => {
   }
 };
 
-const getSingleTemplateService = async (templateId) => {
+const getSingleTemplateService = async (templatePath) => {
   try {
-    return await getSingleTemplateDb(templateId);
+    return await getSingleTemplateDb(templatePath);
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }

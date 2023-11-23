@@ -30,15 +30,15 @@ const getAllTemplates = async (req, res) => {
 };
 
 const getSingleTemplate = async (req, res) => {
-  const { id: templateId } = req.params;
+  const { id: path } = req.params;
   const { recommendation } = req.body;
 
-  const template = await getSingleTemplateService(templateId, recommendation);
+  const template = await getSingleTemplateService(path, recommendation);
 
   if (!template) {
     throw new ErrorHandler(
       StatusCodes.OK,
-      `No invitation with id : ${templateId}`
+      `${path} is not found.`
     );
   }
 
@@ -52,7 +52,7 @@ const getSingleTemplate = async (req, res) => {
       .json({ status: true, template, recommendation });
   }
 
-  res.status(StatusCodes.OK).json({ template });
+  res.status(StatusCodes.OK).json({ status: true, template });
 };
 
 const getAllTemplateCategories = async (req, res) => {

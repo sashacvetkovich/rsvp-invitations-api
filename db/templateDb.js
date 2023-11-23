@@ -32,10 +32,10 @@ const getAllTemplatesDb = async () => {
   return templates;
 };
 
-const getSingleTemplateDb = async (templateId) => {
+const getSingleTemplateDb = async (templatePath) => {
   const { rows: template } = await pool.query(
-    "SELECT id, category, preview_image, template_name, colors ,(SELECT array_to_json(array_agg(row_to_json(template_alias))) AS template_data FROM (SELECT * FROM template_data WHERE template_id = $1) template_alias) FROM invitation_template WHERE id = $1",
-    [templateId]
+    "SELECT id, category, preview_image, template_name, colors ,(SELECT array_to_json(array_agg(row_to_json(template_alias))) AS template_data FROM (SELECT * FROM template_data WHERE template_path = $1) template_alias) FROM invitation_template WHERE path = $1",
+    [templatePath]
   );
   return template[0];
 };
