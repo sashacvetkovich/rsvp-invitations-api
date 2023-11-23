@@ -27,7 +27,7 @@ const createTemplateDataDb = async (data) => {
 
 const getAllTemplatesDb = async () => {
   const { rows: templates } = await pool.query(
-    "SELECT id, category, preview_image_small, template_name, colors FROM invitation_template"
+    "SELECT id, category, preview_image_small, template_name, colors, path FROM invitation_template"
   );
   return templates;
 };

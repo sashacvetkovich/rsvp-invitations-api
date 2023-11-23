@@ -51,12 +51,8 @@ const createTemplateService = async (data) => {
 const getAllTemplatesService = async () => {
   try {
     const allTemplates = await getAllTemplatesDb();
-    const allTemplatesWithPath = allTemplates.map((item) => ({
-      ...item,
-      path: item.template_name?.replaceAll(" ", "-").toLowerCase(),
-    }));
 
-    return allTemplatesWithPath;
+    return allTemplates;
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
