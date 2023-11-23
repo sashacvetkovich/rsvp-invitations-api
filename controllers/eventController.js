@@ -66,7 +66,7 @@ const enableCustomGuests = async (req, res) => {
   const event = await getSingleEventService(eventId);
 
   if (!event) {
-    throw new ErrorHandler(StatusCodes.OK`, No event with id : ${eventId}`);
+    throw new ErrorHandler(StatusCodes.OK, `No event with id : ${eventId}`);
   }
 
   checkPermissions(req.user, event.user_id);

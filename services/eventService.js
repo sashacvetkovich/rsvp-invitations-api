@@ -6,8 +6,8 @@ const {
   enableCustomGuestsDb,
   checkEventPathDb,
 } = require("../db/eventDb");
+const crypto = require("crypto");
 const { ErrorHandler } = require("../helpers/error");
-const { v4: uuid } = require("uuid");
 const { StatusCodes } = require("http-status-codes");
 
 const createEventService = async ({ customDataArray, eventData }) => {
@@ -54,7 +54,7 @@ const getCurrentUserEventsService = async (userId) => {
 
 const enableCustomGuestsService = async (eventId) => {
   try {
-    const customShareId = uuid();
+    const customShareId = crypto.randomBytes(70).toString("hex").slice(0,4);
     const event = await enableCustomGuestsDb({ eventId, customShareId });
 
     return event;
