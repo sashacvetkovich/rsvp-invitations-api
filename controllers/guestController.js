@@ -33,7 +33,7 @@ const addGuest = async (req, res) => {
 
   checkPermissions(req.user, event.user_id);
 
-  const guest = await addGuestService({
+  await addGuestService({
     eventId,
     guestName,
     guestEmail,
@@ -46,7 +46,7 @@ const addGuest = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ status: true, message: `Added guest with id ${guest.guest_id}` });
+    .json({ status: true, message: `Guest is successfully added` });
 };
 
 const addCustomGuest = async (req, res) => {
@@ -66,7 +66,7 @@ const addCustomGuest = async (req, res) => {
     );
   }
 
-  const guest = await addCustomGuestService({
+  await addCustomGuestService({
     ...req.body,
     eventId,
     isCustom: true,
@@ -76,12 +76,11 @@ const addCustomGuest = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ status: true, message: `Added guest with id ${guest.guest_id}` });
+    .json({ status: true, message: `Guest is successfully added` });
 };
 
 const updateGuestData = async (req, res) => {
-  const { id: guestId } = req.params;
-  const { guestName, guestNumber } = req.body;
+  const { guestName, guestNumber, guestId } = req.body;
 
   if (!guestName || !guestNumber) {
     throw new ErrorHandler(StatusCodes.OK, `Please provide guest info`);
@@ -90,7 +89,7 @@ const updateGuestData = async (req, res) => {
   const guest = await getSingleGuestService(guestId);
 
   if (!guest) {
-    throw new ErrorHandler(StatusCodes.OK, `No guest with id : ${guestId}`);
+    throw new ErrorHandler(StatusCodes.OK, "Guest is not fount");
   }
 
   checkPermissions(req.user, Number(guest.user_id));
@@ -120,15 +119,15 @@ const getEventGuestList = async (req, res) => {
 };
 
 const getSingleGuest = async (req, res) => {
-  const { id: guestId } = req.params;
+  const { guestId } = req.body;
 
-  const guest = await getSingleGuestService(guestId);
+  const data = await getSingleGuestService(guestId);
 
-  if (!guest) {
-    throw new ErrorHandler(StatusCodes.OK, `No guest with id : ${guestId}`);
+  if (!data) {
+    throw new ErrorHandler(StatusCodes.OK, "Guest is not fount");
   }
 
-  res.status(StatusCodes.OK).json({ guest });
+  res.status(StatusCodes.OK).json({ status: true, data });
 };
 
 const updateGuestAnswer = async (req, res) => {
@@ -143,7 +142,7 @@ const updateGuestAnswer = async (req, res) => {
   const guest = await getSingleGuestService(guestId);
 
   if (!guest) {
-    throw new ErrorHandler(StatusCodes.OK, `No guest with id : ${guestId}`);
+    throw new ErrorHandler(StatusCodes.OK, "Guest is not fount");
   }
 
   const guestIdDb = await updateGuestAnswerService({ ...answerData, guestId });
@@ -155,7 +154,7 @@ const updateGuestAnswer = async (req, res) => {
 };
 
 const deleteGuest = async (req, res) => {
-  const { id: guestId } = req.params;
+  const { guestId } = req.body;
 
   if (!guestId) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest Id");

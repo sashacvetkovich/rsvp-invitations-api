@@ -19,7 +19,7 @@ router.route("/event/:eventId").get(authenticateUser, getEventGuestList);
 router.route("/customguest").post(addCustomGuest);
 
 router
-  .route("/:id")
+  .route("/")
   .patch(authenticateUser, updateGuestData)
   .get(getSingleGuest)
   .delete(authenticateUser, deleteGuest)

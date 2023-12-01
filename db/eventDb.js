@@ -45,6 +45,14 @@ const getSingleEventDb = async (eventId) => {
   return event[0];
 };
 
+const getSingleEventByPathDb = async (eventPath) => {
+  const { rows: event } = await pool.query(
+    "SELECT * ,(SELECT array_to_json(array_agg(row_to_json(template_alias))) AS template_data FROM (SELECT * FROM custom_data WHERE event_path = $1) template_alias) FROM event WHERE event_path = $1",
+    [eventPath]
+  );
+  return event[0];
+};
+
 const getCurrentUserEventsDb = async (userId) => {
   const { rows: events } = await pool.query(
     "SELECT event_id, event_date, event_name FROM event WHERE user_id = $1",
@@ -81,6 +89,7 @@ module.exports = {
   createEventDb,
   createEventCustomDataDb,
   getSingleEventDb,
+  getSingleEventByPathDb,
   getCurrentUserEventsDb,
   enableCustomGuestsDb,
   getBasicEventInfoDb,

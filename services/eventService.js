@@ -5,6 +5,7 @@ const {
   getCurrentUserEventsDb,
   enableCustomGuestsDb,
   checkEventPathDb,
+  getSingleEventByPathDb
 } = require("../db/eventDb");
 const crypto = require("crypto");
 const { ErrorHandler } = require("../helpers/error");
@@ -35,6 +36,18 @@ const createEventService = async ({ customDataArray, eventData }) => {
 const getSingleEventService = async (eventId) => {
   try {
     const event = await getSingleEventDb(eventId);
+
+    return event;
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const getCustomGuestEventService = async ({ eventPath, customShareId }) => {
+  try {
+    const event = await getSingleEventByPathDb(eventPath);
+
+    if (event?.custom_share_id !== customShareId) return;
 
     return event;
   } catch (error) {
@@ -79,4 +92,5 @@ module.exports = {
   getCurrentUserEventsService,
   enableCustomGuestsService,
   checkEventPathService,
+  getCustomGuestEventService
 };

@@ -5,9 +5,10 @@ const {
   getSingleGuestDb,
   updateGuestAnswerDb,
   updateGuestDataDb,
-  deleteGuestDb
+  deleteGuestDb,
 } = require("../db/guestDb");
 
+const { getSingleEventDb, getSingleEventByPathDb } = require("../db/eventDb");
 const { getBasicEventInfoDb } = require("../db/eventDb");
 const { ErrorHandler } = require("../helpers/error");
 const { v4: uuid } = require("uuid");
@@ -57,8 +58,11 @@ const getEventGuestListService = async (eventId) => {
 const getSingleGuestService = async (guestId) => {
   try {
     const guest = await getSingleGuestDb(guestId);
+    if (!guest?.event_id) return;
 
-    return guest;
+    const event = await getSingleEventDb(guest.event_id);
+
+    return { event, guest };
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
@@ -84,7 +88,6 @@ const deleteGuestService = async (guestId) => {
   }
 };
 
-
 module.exports = {
   addGuestService,
   addCustomGuestService,
@@ -92,5 +95,5 @@ module.exports = {
   getSingleGuestService,
   updateGuestAnswerService,
   updateGuestDataService,
-  deleteGuestService
+  deleteGuestService,
 };
