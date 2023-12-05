@@ -10,7 +10,7 @@ const {
   getEventGuestList,
   getSingleGuest,
   updateGuestAnswer,
-  deleteGuest
+  deleteGuest,
 } = require("../controllers/guestController");
 
 router.route("/updateAnswer").post(updateGuestAnswer);
@@ -19,9 +19,9 @@ router.route("/event/:eventId").get(authenticateUser, getEventGuestList);
 router.route("/customguest").post(addCustomGuest);
 
 router
-  .route("/")
+  .route("/:id")
   .patch(authenticateUser, updateGuestData)
   .get(getSingleGuest)
-  .delete(authenticateUser, deleteGuest)
+  .delete(authenticateUser, deleteGuest);
 
 module.exports = router;

@@ -80,7 +80,8 @@ const addCustomGuest = async (req, res) => {
 };
 
 const updateGuestData = async (req, res) => {
-  const { guestName, guestNumber, guestId } = req.body;
+  const { id: guestId } = req.params;
+  const { guestName, guestNumber } = req.body;
 
   if (!guestName || !guestNumber) {
     throw new ErrorHandler(StatusCodes.OK, `Please provide guest info`);
@@ -119,7 +120,8 @@ const getEventGuestList = async (req, res) => {
 };
 
 const getSingleGuest = async (req, res) => {
-  const { guestId } = req.body;
+  const { id: guestId } = req.params;
+  console.log(guestId);
 
   const data = await getSingleGuestService(guestId);
 
@@ -131,7 +133,8 @@ const getSingleGuest = async (req, res) => {
 };
 
 const updateGuestAnswer = async (req, res) => {
-  const { answerData, guestId } = req.body;
+  const { id: guestId } = req.params;
+  const { answerData } = req.body;
 
   if (!guestId) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest Id");
@@ -154,7 +157,7 @@ const updateGuestAnswer = async (req, res) => {
 };
 
 const deleteGuest = async (req, res) => {
-  const { guestId } = req.body;
+  const { id: guestId } = req.params;
 
   if (!guestId) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest Id");
