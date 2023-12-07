@@ -18,7 +18,7 @@ router.route("/").post(authenticateUser, createEvent);
 router.route("/checkpath").post(authenticateUser, checkEventPath);
 router.route("/enablecustomguests").post(authenticateUser, enableCustomGuests);
 router.route("/myevents").get(authenticateUser, getCurrentUserEvents);
-router.route("/customevent").get(getCustomGuestEvent);
+router.route("/customevent/:eventPath/:customShareId").get(getCustomGuestEvent);
 router.route("/:id").get(authenticateUser, getSingleEvent);
 
 module.exports = router;

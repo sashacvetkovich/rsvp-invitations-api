@@ -9,7 +9,7 @@ const {
   getCurrentUserEventsService,
   enableCustomGuestsService,
   checkEventPathService,
-  getCustomGuestEventService
+  getCustomGuestEventService,
 } = require("../services/eventService.js");
 const { isString } = require("../helpers/common.js");
 
@@ -35,7 +35,9 @@ const createEvent = async (req, res) => {
   };
   const event = await createEventService({ eventData, customDataArray });
 
-  res.status(StatusCodes.CREATED).json({ status: true, eventId: event.event_id });
+  res
+    .status(StatusCodes.CREATED)
+    .json({ status: true, eventId: event.event_id });
 };
 
 const getSingleEvent = async (req, res) => {
@@ -59,7 +61,7 @@ const getCurrentUserEvents = async (req, res) => {
 };
 
 const getCustomGuestEvent = async (req, res) => {
-  const { eventPath, customShareId } = req.body;
+  const { eventPath, customShareId } = req.params;
 
   const data = await getCustomGuestEventService({ eventPath, customShareId });
 
@@ -110,5 +112,5 @@ module.exports = {
   getCurrentUserEvents,
   enableCustomGuests,
   checkEventPath,
-  getCustomGuestEvent
+  getCustomGuestEvent,
 };
