@@ -23,6 +23,7 @@ const createEventService = async ({ customDataArray, eventData }) => {
     const customDataWihId = await customDataArray.map((item) => [
       ...item,
       event.event_id,
+      eventData.eventPath
     ]);
 
     await createEventCustomDataDb(customDataWihId);
