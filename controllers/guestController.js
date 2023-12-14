@@ -120,7 +120,6 @@ const getEventGuestList = async (req, res) => {
 
 const getSingleGuest = async (req, res) => {
   const { id: guestId } = req.params;
-  console.log(guestId);
 
   const data = await getSingleGuestService(guestId);
 
@@ -132,26 +131,25 @@ const getSingleGuest = async (req, res) => {
 };
 
 const updateGuestAnswer = async (req, res) => {
-  const { id: guestId } = req.params;
-  const { answerData } = req.body;
-
-  if (!guestId) {
-    throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest Id");
-  }
-
-  updateGuestAnswerValidator(answerData);
-
+  updateGuestAnswerValidator(req.body);
+  
+  const { guestId, guestComment, guestNumber, isComming } = req.body;
   const guest = await getSingleGuestService(guestId);
 
   if (!guest) {
     throw new ErrorHandler(StatusCodes.OK, "Guest is not fount");
   }
 
-  const guestIdDb = await updateGuestAnswerService({ ...answerData, guestId });
+  const guestIdDb = await updateGuestAnswerService({
+    guestComment,
+    guestNumber,
+    isComming,
+    guestId,
+  });
 
   res.status(StatusCodes.OK).json({
     status: true,
-    message: `Guest with id ${guestIdDb.user_id} info is updated`,
+    message: `Answer for ${guestIdDb.guest_name} is successfully updated`,
   });
 };
 

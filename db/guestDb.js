@@ -80,7 +80,7 @@ const updateGuestAnswerDb = async ({
   guestId,
 }) => {
   const { rows: guest } = await pool.query(
-    `UPDATE guest SET guest_comment = $1, guest_number=$2, is_coming=$3, is_answered=true WHERE guest_id = $4 returning user_id`,
+    `UPDATE guest SET guest_comment = $1, guest_number=$2, is_coming=$3, is_answered=true WHERE guest_id = $4 returning guest_name`,
     [guestComment, guestNumber, isComing, guestId]
   );
 

@@ -14,8 +14,9 @@ const updateGuestAnswerValidator = (answerData) => {
 
   if (
     !isString(answerData.guestComment) ||
+    !isString(answerData.guestId) ||
     !isNumber(answerData.guestNumber) ||
-    !isBoolean(answerData.isComing)
+    !isBoolean(answerData.isComming)
   ) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid answer info");
   }
