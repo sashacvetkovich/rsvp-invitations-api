@@ -48,7 +48,7 @@ const getCustomGuestEventService = async ({ eventPath, customShareId }) => {
   try {
     const event = await getSingleEventByPathDb(eventPath);
 
-    if (event?.custom_share_id !== customShareId) return;
+    if (event?.custom_share_id !== customShareId) return null;
 
     return event;
   } catch (error) {

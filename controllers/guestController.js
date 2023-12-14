@@ -13,6 +13,8 @@ const {
   deleteGuestService,
 } = require("../services/guestService");
 
+const { getCustomGuestEventService } = require("../services/eventService");
+
 const {
   updateGuestAnswerValidator,
   addCustomGuestValidator,
@@ -50,25 +52,22 @@ const addGuest = async (req, res) => {
 };
 
 const addCustomGuest = async (req, res) => {
-  const { eventId, customShareId } = req.body;
+  const { eventPath, customShareId } = req.body;
 
-  if (!eventId) {
+  if (!eventPath) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest info");
   }
   addCustomGuestValidator(req.body);
 
-  const event = await getSingleEventService(eventId);
+  const event = await getCustomGuestEventService({ eventPath, customShareId });
 
-  if (!event || event.custom_share_id !== customShareId) {
-    throw new ErrorHandler(
-      StatusCodes.OK,
-      "Custom guests option is not enabled"
-    );
+  if (!event) {
+    throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest info");
   }
 
   await addCustomGuestService({
     ...req.body,
-    eventId,
+    eventId: event.event_id,
     isCustom: true,
     isAnswered: true,
     isComing: true,

@@ -27,14 +27,14 @@ const addCustomGuestValidator = (guestData) => {
     guestNumber,
     guestComment,
     guestEmail,
-    eventId,
+    eventPath,
     customShareId,
   } = guestData;
 
   if (
     !isString(guestName) ||
     !isNumber(guestNumber) ||
-    !eventId ||
+    !eventPath ||
     !customShareId
   ) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid guest info");
