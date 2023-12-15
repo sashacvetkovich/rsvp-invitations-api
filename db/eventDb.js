@@ -55,7 +55,7 @@ const getSingleEventByPathDb = async (eventPath) => {
 
 const getCurrentUserEventsDb = async (userId) => {
   const { rows: events } = await pool.query(
-    "SELECT event_id, event_date, event_name FROM event WHERE user_id = $1",
+    "SELECT event_id, event_date, event_name, event_path FROM event WHERE user_id = $1",
     [userId]
   );
   return events;
