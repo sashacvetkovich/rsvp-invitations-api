@@ -8,6 +8,8 @@ const {
   deleteGuestDb,
 } = require("../db/guestDb");
 
+const { sendGuestInvitationnEmail } = require("../utils/emails");
+
 const { getSingleEventDb, getSingleEventByPathDb } = require("../db/eventDb");
 const { getBasicEventInfoDb } = require("../db/eventDb");
 const { ErrorHandler } = require("../helpers/error");
@@ -15,8 +17,14 @@ const { v4: uuid } = require("uuid");
 
 const addGuestService = async (guestData) => {
   try {
-    const guestDataWithId = { ...guestData, guestId: uuid() };
+    const guestId = uuid();
+    const guestDataWithId = { ...guestData, guestId };
     const guest = await addGuestDb(guestDataWithId);
+
+    await sendGuestInvitationnEmail({
+      guestId,
+      guestEmail: guestData.guestEmail,
+    });
 
     return guest;
   } catch (error) {

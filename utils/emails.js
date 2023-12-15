@@ -6,7 +6,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 class ResetPasswordEmail {
   constructor({ to, url, templateId }) {
     this.to = [to];
-    this.from = { name: "Sasa IV", email: "cvetkovicsasahs@gmail.com" };
+    this.from = { name: "Invitewave", email: "cvetkovicsasahs@gmail.com" };
     this.templateId = templateId;
     this.dynamicTemplateData = {
       url: url,
@@ -26,6 +26,17 @@ class VerifyEmail {
   }
 }
 
+class GuestInvitationnEmail {
+  constructor({ to, url, templateId }) {
+    this.to = [to];
+    this.from = { name: "Sasa IV", email: "cvetkovicsasahs@gmail.com" };
+    this.templateId = templateId;
+    this.dynamicTemplateData = {
+      url: url,
+    };
+  }
+}
+
 const sendMail = async (message) => {
   if (process.env.NODE_ENV === "test") return;
   try {
@@ -36,8 +47,7 @@ const sendMail = async (message) => {
 };
 
 const sendResetPasswordEmail = async ({ userEmail, token }) => {
-  const origin = process.env.ORIGIN;
-  const url = `${origin}/reset-password?token=${token}&email=${userEmail}`;
+  const url = `https://invitewave.com/reset-password?token=${token}&email=${userEmail}`;
 
   const message = new ResetPasswordEmail({
     templateId: "d-75779e3761194e5c9d79a77d13bf59a4",
@@ -64,4 +74,22 @@ const sendVerificationEmail = async ({ userEmail, name, token }) => {
   await sendMail(message);
 };
 
-module.exports = { sendResetPasswordEmail, sendVerificationEmail };
+const sendGuestInvitationnEmail = async ({ guestId, guestEmail }) => {
+  const origin = process.env.ORIGIN;
+  const url = `${origin}/guest/${guestId}`;
+
+  const message = new GuestInvitationnEmail({
+    templateId: "d-c0ffc29a5a2243deb54f3f748b082c1c",
+    to: guestEmail,
+    url,
+    hideWarnings: true,
+  });
+
+  await sendMail(message);
+};
+
+module.exports = {
+  sendResetPasswordEmail,
+  sendVerificationEmail,
+  sendGuestInvitationnEmail,
+};
