@@ -119,7 +119,7 @@ const loginService = async (email, password) => {
 const refreshTokenService = async (refreshToken) => {
   try {
     const foundUser = await getUserByRefreshTokenDb(refreshToken);
-    if (!foundUser) return res.sendStatus(403); //Forbidden
+    if (!foundUser) return null //Forbidden
 
     const isTokenValid = isRefreshTokenValid(refreshToken, foundUser);
     if (isTokenValid) {
