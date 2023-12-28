@@ -97,7 +97,7 @@ const loginService = async (email, password) => {
 
     let refreshToken = user.refresh_token;
 
-    if (!refreshToken || !isRefreshTokenValid(refreshToken)) {
+    if (!refreshToken || !isRefreshTokenValid(refreshToken, user)) {
       refreshToken = await signRefreshToken({
         id: user_id,
         roles,
