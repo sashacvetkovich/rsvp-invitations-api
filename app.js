@@ -33,7 +33,7 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/v1", routes);
+app.use("/v1", routes);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
