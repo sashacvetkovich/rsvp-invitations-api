@@ -21,3 +21,4 @@ jobs:
             git pull origin main
             git status
             npm install
+            pm2 restart invitewave_be
