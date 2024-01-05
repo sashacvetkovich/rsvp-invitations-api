@@ -16,4 +16,8 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          script: whoami
+          script: |
+            cd /home/sasa/sites/invitations
+            git pull origin main
+            git status
+            npm install
