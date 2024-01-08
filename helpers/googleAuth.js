@@ -8,7 +8,7 @@ const getGoogleOAuthTokens = async ({ code }) => {
       code,
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: "http://localhost:8000/api/v1/auth/google",
+      redirect_uri: process.env.GOOGLE_OAUTH_REDIRECT_URL,
       grant_type: "authorization_code",
     });
     return res.data;
