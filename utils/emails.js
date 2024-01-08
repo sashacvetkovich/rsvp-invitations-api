@@ -6,22 +6,23 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 class ResetPasswordEmail {
   constructor({ to, url, templateId }) {
     this.to = [to];
-    this.from = { name: "Invitewave", email: "cvetkovicsasahs@gmail.com" };
+    this.from = { name: "Invitewave", email: process.env.FROM_EMAIL };
     this.templateId = templateId;
-    this.dynamicTemplateData = {
+    this.hideWarnings = true;
+    this.dynamic_template_data = {
       url: url,
     };
   }
 }
 
 class VerifyEmail {
-  constructor({ to, url, templateId, name }) {
+  constructor({ to, url, templateId }) {
     this.to = [to];
-    this.from = { name: "Sasa IV", email: "cvetkovicsasahs@gmail.com" };
+    this.from = { name: "Invitewave", email: process.env.FROM_EMAIL };
     this.templateId = templateId;
-    this.dynamicTemplateData = {
+    this.hideWarnings = true;
+    this.dynamic_template_data = {
       url: url,
-      name: name,
     };
   }
 }
@@ -29,9 +30,10 @@ class VerifyEmail {
 class GuestInvitationnEmail {
   constructor({ to, url, templateId }) {
     this.to = [to];
-    this.from = { name: "Sasa IV", email: "cvetkovicsasahs@gmail.com" };
+    this.from = { name: "Invitewave", email: process.env.FROM_EMAIL };
     this.templateId = templateId;
-    this.dynamicTemplateData = {
+    this.hideWarnings = true;
+    this.dynamic_template_data = {
       url: url,
     };
   }
@@ -53,13 +55,12 @@ const sendResetPasswordEmail = async ({ userEmail, token }) => {
     templateId: "d-75779e3761194e5c9d79a77d13bf59a4",
     to: userEmail,
     url,
-    hideWarnings: true,
   });
 
   await sendMail(message);
 };
 
-const sendVerificationEmail = async ({ userEmail, name, token }) => {
+const sendVerificationEmail = async ({ userEmail, token }) => {
   const origin = process.env.ORIGIN;
   const url = `${origin}/verify?token=${token}&email=${userEmail}`;
 
@@ -67,8 +68,6 @@ const sendVerificationEmail = async ({ userEmail, name, token }) => {
     templateId: "d-60e71b0dfe514e388f24146f849fcadc",
     to: userEmail,
     url,
-    name,
-    hideWarnings: true,
   });
 
   await sendMail(message);
@@ -77,14 +76,11 @@ const sendVerificationEmail = async ({ userEmail, name, token }) => {
 const sendGuestInvitationnEmail = async ({ guestId, guestEmail }) => {
   const origin = process.env.ORIGIN;
   const url = `${origin}/guest/${guestId}`;
-
   const message = new GuestInvitationnEmail({
     templateId: "d-c0ffc29a5a2243deb54f3f748b082c1c",
     to: guestEmail,
     url,
-    hideWarnings: true,
   });
-
   await sendMail(message);
 };
 

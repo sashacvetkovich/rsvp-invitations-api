@@ -52,7 +52,6 @@ const registerService = async (user) => {
       });
 
       sendVerificationEmail({
-        name: newUser.fullname,
         token: newUser.verification_token,
         userEmail: newUser.email,
       });
