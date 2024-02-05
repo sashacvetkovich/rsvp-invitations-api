@@ -29,7 +29,6 @@ const createTemplateValidator = (data) => {
     templateName,
     category,
     previewImage,
-    previewImageSmall,
     colors,
     templateElementsData,
   } = data;
@@ -38,7 +37,6 @@ const createTemplateValidator = (data) => {
     !templateName ||
     !category ||
     !previewImage ||
-    !previewImageSmall ||
     !colors ||
     // TO DO - improve templateElementsData validation
     !templateElementsData.length

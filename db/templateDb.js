@@ -5,12 +5,11 @@ const createTemplateDb = async ({
   category,
   previewImage,
   templateName,
-  previewImageSmall,
   colors,
 }) => {
   const { rows: template } = await pool.query(
-    "INSERT INTO invitation_template(category, preview_image, template_name, preview_image_small, colors) VALUES ($1, $2, $3, $4, $5) returning *; ",
-    [category, previewImage, templateName, previewImageSmall, colors]
+    "INSERT INTO invitation_template(category, preview_image, template_name, colors) VALUES ($1, $2, $3, $4, $5) returning *; ",
+    [category, previewImage, templateName, colors]
   );
   return template[0];
 };
@@ -27,7 +26,7 @@ const createTemplateDataDb = async (data) => {
 
 const getAllTemplatesDb = async () => {
   const { rows: templates } = await pool.query(
-    "SELECT id, category, preview_image_small, template_name, colors, path FROM invitation_template"
+    "SELECT id, category, preview_image, template_name, colors, path FROM invitation_template"
   );
   return templates;
 };
@@ -42,7 +41,7 @@ const getSingleTemplateDb = async (templatePath) => {
 
 const getTemplateRecommendationDb = async (category) => {
   const { rows: templates } = await pool.query(
-    "SELECT id, template_name, category, preview_image_small FROM invitation_template WHERE category = $1 LIMIT 4",
+    "SELECT id, template_name, category, preview_image FROM invitation_template WHERE category = $1 LIMIT 4",
     [category]
   );
   return templates;

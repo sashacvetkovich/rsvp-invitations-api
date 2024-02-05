@@ -15,7 +15,6 @@ const createTemplateService = async (data) => {
     templateName,
     category,
     previewImage,
-    previewImageSmall,
     colors,
     templateElementsData,
   } = data;
@@ -25,7 +24,6 @@ const createTemplateService = async (data) => {
       templateName,
       category,
       previewImage,
-      previewImageSmall,
       colors,
     });
 
