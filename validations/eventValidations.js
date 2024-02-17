@@ -19,7 +19,6 @@ const createEventValidator = (data) => {
     !isString(eventInfo.venueAddress) ||
     !isString(eventInfo.eventPath) ||
     !isString(eventInfo.venueName) ||
-    !isString(eventInfo.usedFonts) ||
     !Number.isInteger(eventInfo.templateId)
   ) {
     throw new ErrorHandler(StatusCodes.OK, "Please provide valid event data");
