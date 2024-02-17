@@ -11,7 +11,7 @@ const createEventDb = async ({
   eventPath
 }) => {
   const { rows: eventDetails } = await pool.query(
-    "INSERT INTO event(template_id, event_date, event_name, venue_name, venue_address, user_id, event_path) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning event_id; ",
+    "INSERT INTO event(template_id, event_date, event_name, venue_name, venue_address, user_id, event_path) VALUES ($1, $2, $3, $4, $5, $6, $7) returning event_id; ",
     [
       templateId,
       eventDate,
